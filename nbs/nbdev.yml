@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "cjm-transcript-vad-align"
+  site-url: "https://cj-mills.github.io/cjm-transcript-vad-align"
+  description: "FastHTML VAD alignment component for transcript decomposition with Silero VAD audio chunking, card stack navigation with audio playback, and Web Audio API integration."
+  repo-branch: main
+  repo-url: "https://github.com/cj-mills/cjm-transcript-vad-align"
