@@ -30,7 +30,8 @@ class AlignContext(NamedTuple):
     visible_count: int  # Number of visible cards in viewport
     is_auto_mode: bool  # Whether card count is in auto-adjust mode
     card_width: int  # Card stack width in rem
-    media_path: Optional[str]  # Path to original audio file
+    media_path: Optional[str]  # Path to first audio file (backward compat)
+    media_paths: List[str]  # Ordered list of all audio file paths
     audio_duration: Optional[float]  # Total audio duration
 
 # %% ../../nbs/routes/core.ipynb #align-rc-state
@@ -68,6 +69,7 @@ def _load_alignment_context(
         is_auto_mode=state.get("is_auto_mode", False),
         card_width=state.get("card_width", 40),
         media_path=state.get("media_path"),
+        media_paths=state.get("media_paths", []),
         audio_duration=state.get("audio_duration"),
     )
 
@@ -81,7 +83,8 @@ def _update_alignment_state(
     visible_count=None,  # Visible card count
     is_auto_mode=None,  # Auto-adjust mode flag
     card_width=None,  # Card stack width in rem
-    media_path=None,  # Original audio file path
+    media_path=None,  # First audio file path (backward compat)
+    media_paths=None,  # Ordered list of all audio file paths
     audio_duration=None,  # Audio duration
 ) -> None:
     """Update the alignment step state in the workflow state store."""
@@ -90,11 +93,6 @@ def _update_alignment_state(
 
     # Read full state to preserve sibling step states
     workflow_state = state_store.get_state(workflow_id, session_id)
-
-    if DEBUG_ALIGN_STATE:
-        print(f"[ALIGN_STATE] BEFORE: step_states keys = {list(workflow_state.get('step_states', {}).keys())}")
-        selection_state = workflow_state.get('step_states', {}).get('selection', {})
-        print(f"[ALIGN_STATE] BEFORE: selection.selected_sources count = {len(selection_state.get('selected_sources', []))}")
 
     step_states = workflow_state.get("step_states", {})
     align_state = step_states.get("alignment", {})
@@ -114,20 +112,15 @@ def _update_alignment_state(
         align_state["card_width"] = card_width
     if media_path is not None:
         align_state["media_path"] = media_path
+    if media_paths is not None:
+        align_state["media_paths"] = media_paths
     if audio_duration is not None:
         align_state["audio_duration"] = audio_duration
 
     step_states["alignment"] = align_state
     workflow_state["step_states"] = step_states
 
-    if DEBUG_ALIGN_STATE:
-        print(f"[ALIGN_STATE] AFTER: step_states keys = {list(step_states.keys())}")
-
     state_store.update_state(workflow_id, session_id, workflow_state)
-
-    if DEBUG_ALIGN_STATE:
-        verify_state = state_store.get_state(workflow_id, session_id)
-        print(f"[ALIGN_STATE] VERIFY: step_states keys = {list(verify_state.get('step_states', {}).keys())}")
 
 # %% ../../nbs/routes/core.ipynb #align-rc-conversion
 def _to_vad_chunks(

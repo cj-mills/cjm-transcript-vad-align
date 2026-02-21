@@ -52,34 +52,37 @@ graph LR
     utils[utils<br/>utils]
 
     components_helpers --> models
-    components_step_renderer --> components_card_stack_config
-    components_step_renderer --> html_ids
-    components_step_renderer --> components_callbacks
-    components_step_renderer --> components_vad_card
     components_step_renderer --> models
-    components_vad_card --> html_ids
-    components_vad_card --> utils
+    components_step_renderer --> utils
+    components_step_renderer --> components_callbacks
+    components_step_renderer --> components_card_stack_config
+    components_step_renderer --> components_vad_card
+    components_step_renderer --> html_ids
     components_vad_card --> models
+    components_vad_card --> utils
+    components_vad_card --> html_ids
+    routes_card_stack --> models
     routes_card_stack --> routes_core
+    routes_card_stack --> utils
+    routes_card_stack --> components_step_renderer
     routes_card_stack --> components_card_stack_config
     routes_card_stack --> components_vad_card
-    routes_card_stack --> models
     routes_core --> models
+    routes_handlers --> models
     routes_handlers --> routes_core
+    routes_handlers --> components_step_renderer
     routes_handlers --> services_alignment
     routes_handlers --> html_ids
-    routes_handlers --> components_step_renderer
-    routes_handlers --> models
+    routes_init --> models
     routes_init --> routes_handlers
+    routes_init --> routes_core
     routes_init --> services_alignment
     routes_init --> routes_card_stack
-    routes_init --> models
-    routes_init --> routes_core
     services_alignment --> models
     utils --> models
 ```
 
-*26 cross-module dependencies detected*
+*29 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -168,20 +171,12 @@ class AlignmentService:
 
 ``` python
 from cjm_transcript_vad_align.components.callbacks import (
+    ALIGN_AUDIO_CONFIG,
     generate_align_callbacks_script
 )
 ```
 
 #### Functions
-
-``` python
-def _generate_align_focus_change_script(
-    focus_input_id:str,  # ID of hidden input for focused chunk index
-    audio_player_id:str,  # ID of the hidden audio element (for src URL extraction)
-    card_stack_id:str,  # ID of the alignment card stack container
-) -> str:  # JavaScript for focus change with audio playback and playing indicator
-    "Generate JS for VAD chunk focus change handling with Web Audio API playback."
-```
 
 ``` python
 def generate_align_callbacks_script(
@@ -191,9 +186,14 @@ def generate_align_callbacks_script(
     urls:CardStackUrls,  # Card stack URL bundle
     container_id:str,  # ID of the alignment container (parent of card stack)
     focus_input_id:str,  # ID of hidden input for focused chunk index
-    audio_player_id:str,  # ID of the hidden audio element
 ) -> any:  # Script element with all JavaScript callbacks
-    "Generate JavaScript for alignment card stack with audio audition."
+    "Generate JavaScript for alignment card stack with Web Audio API audition."
+```
+
+#### Variables
+
+``` python
+ALIGN_AUDIO_CONFIG
 ```
 
 ### card_stack (`card_stack.ipynb`)
@@ -227,7 +227,7 @@ def _handle_align_navigate(
     sess:Any,  # FastHTML session object
     direction:str,  # Navigation direction: up/down/first/last/page_up/page_down
     urls:AlignmentUrls,  # URL bundle
-) -> Tuple:  # OOB response elements (slots + progress + focus)
+) -> Tuple:  # OOB response elements (slots + progress + focus + source position)
     "Navigate the alignment card stack."
 ```
 
@@ -340,7 +340,8 @@ def _update_alignment_state(
     visible_count=None,  # Visible card count
     is_auto_mode=None,  # Auto-adjust mode flag
     card_width=None,  # Card stack width in rem
-    media_path=None,  # Original audio file path
+    media_path=None,  # First audio file path (backward compat)
+    media_paths=None,  # Ordered list of all audio file paths
     audio_duration=None,  # Audio duration
 ) -> None
     "Update the alignment step state in the workflow state store."
@@ -403,10 +404,10 @@ async def _handle_align_init(
     card_width:int=DEFAULT_CARD_WIDTH,  # Initial card width in rem
 ) -> AlignInitResult:  # Pure domain result for wrapper to use
     """
-    Initialize alignment from audio file via VAD plugin.
+    Initialize alignment from audio files via VAD plugin.
     
-    Returns pure domain data. The combined layer wrapper adds cross-domain
-    coordination (shared chrome, alignment status).
+    Processes all selected sources' audio files, generating VAD chunks
+    for each with correct audio_file_index. Returns pure domain data.
     """
 ```
 
@@ -688,6 +689,7 @@ from cjm_transcript_vad_align.components.step_renderer import (
     DEBUG_ALIGN_RENDER,
     render_align_toolbar,
     render_align_stats,
+    render_align_source_position,
     render_align_column_body,
     render_align_footer_content,
     render_align_mini_stats_text
@@ -714,6 +716,15 @@ def render_align_stats(
 ```
 
 ``` python
+def render_align_source_position(
+    chunks:List[VADChunk],  # Current VAD chunks
+    focused_index:int=0,  # Currently focused chunk index
+    oob:bool=False,  # Whether to render as OOB swap
+) -> Any:  # Audio file position indicator (empty if single file)
+    "Render audio file position indicator for the focused chunk."
+```
+
+``` python
 def render_align_column_body(
     chunks:List[VADChunk],  # VAD chunks to display
     focused_index:int,  # Currently focused chunk index
@@ -721,7 +732,7 @@ def render_align_column_body(
     card_width:int,  # Card stack width in rem
     urls:AlignmentUrls,  # URL bundle for alignment routes
     kb_system:Any=None,  # Rendered keyboard system (None when KB managed externally)
-    media_path:Optional[str]=None,  # Path to audio file for playback
+    audio_urls:Optional[List[str]]=None,  # Audio file URLs for Web Audio API
 ) -> Any:  # Div with id=COLUMN_CONTENT
     "Render the alignment column content area with card stack viewport."
 ```
@@ -730,8 +741,8 @@ def render_align_column_body(
 def render_align_footer_content(
     chunks:List[VADChunk],  # Current VAD chunks
     focused_index:int,  # Currently focused chunk index
-) -> Any:  # Footer content with progress indicator and stats
-    "Render footer content with progress indicator and alignment statistics."
+) -> Any:  # Footer content with progress indicator, source position, and stats
+    "Render footer content with progress indicator, source position, and alignment statistics."
 ```
 
 ``` python
@@ -822,16 +833,15 @@ from cjm_transcript_vad_align.components.vad_card import (
 def render_vad_card(
     chunk:VADChunk,  # VAD chunk to render
     card_role:CardRole,  # Role of this card in viewport ("focused" or "context")
+    has_boundary_above:bool=False,  # Audio file boundary exists above this card
+    has_boundary_below:bool=False,  # Audio file boundary exists below this card
 ) -> Any:  # VAD chunk card component
     "Render a single VAD chunk card with time range, duration, and playing indicator."
 ```
 
 ``` python
-def create_vad_card_renderer() -> Callable:  # Card renderer callback: (item, CardRenderContext) -> FT
-    """Create a card renderer callback for VAD chunk cards."""
-    def _render(
-        item:Any,  # VADChunk instance
-        context:CardRenderContext,  # Render context from card stack library
-    ) -> Any:  # Rendered VAD chunk card component
+def create_vad_card_renderer(
+    audio_file_boundaries:Set[int]=None,  # Indices where audio_file_index changes
+) -> Callable:  # Card renderer callback: (item, CardRenderContext) -> FT
     "Create a card renderer callback for VAD chunk cards."
 ```

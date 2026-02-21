@@ -27,7 +27,7 @@ class AlignmentHtmlIds:
     ALIGNMENT_TOOLBAR = "sd-align-toolbar"
     ALIGNMENT_STATS = "sd-align-stats"
     ALIGNMENT_FOOTER = "sd-align-footer"
-    AUDIO_PLAYER = "sd-audio-player"
+    SOURCE_POSITION = "sd-align-source-position"  # Audio file position indicator
 
     @staticmethod
     def vad_chunk(

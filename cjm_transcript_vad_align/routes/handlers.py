@@ -42,11 +42,12 @@ class AlignInitResult(NamedTuple):
     when building cross-domain OOB elements (shared chrome, alignment status).
     """
     column_body: Any  # Rendered column body content
-    chunks: List[VADChunk]  # Initialized VAD chunks
+    chunks: List[VADChunk]  # Initialized VAD chunks (all files combined)
     focused_index: int  # Focused chunk index (always 0 on init)
     visible_count: int  # Visible card count
     card_width: int  # Card stack width in rem
-    media_path: str  # Path to audio file (may be None)
+    media_path: str  # Path to first audio file (backward compat, may be None)
+    media_paths: List[str]  # Ordered list of all audio file paths
 
 # %% ../../nbs/routes/handlers.ipynb #align-hd-init
 async def _handle_align_init(
@@ -60,52 +61,73 @@ async def _handle_align_init(
     visible_count:int=DEFAULT_VISIBLE_COUNT,  # Initial visible card count
     card_width:int=DEFAULT_CARD_WIDTH,  # Initial card width in rem
 ) -> AlignInitResult:  # Pure domain result for wrapper to use
-    """Initialize alignment from audio file via VAD plugin.
+    """Initialize alignment from audio files via VAD plugin.
     
-    Returns pure domain data. The combined layer wrapper adds cross-domain
-    coordination (shared chrome, alignment status).
+    Processes all selected sources' audio files, generating VAD chunks
+    for each with correct audio_file_index. Returns pure domain data.
     """
     session_id = get_session_id(sess)
 
     if DEBUG_ALIGNMENT:
         print(f"[ALIGN_INIT] Starting alignment initialization")
-        print(f"[ALIGN_INIT] session_id: {session_id}")
 
-    # Get media_path from selected sources (Phase 1)
+    # Get selected sources from Phase 1
     selection_state = _get_selection_state(state_store, workflow_id, session_id)
     selected_sources = selection_state.get("selected_sources", [])
 
     if DEBUG_ALIGNMENT:
         print(f"[ALIGN_INIT] selected_sources count: {len(selected_sources)}")
 
-    # Extract media_path from first selected source's source block
-    media_path = None
-    if selected_sources:
-        first_source = selected_sources[0]
+    # Extract unique media_paths from all selected sources (preserving order)
+    media_paths = []
+    seen_paths = set()
+    for source in selected_sources:
         block = source_service.get_transcription_by_id(
-            record_id=first_source["record_id"],
-            provider_id=first_source["provider_id"],
+            record_id=source["record_id"],
+            provider_id=source["provider_id"],
         )
-        if DEBUG_ALIGNMENT and block:
-            print(f"[ALIGN_INIT] block.media_path: {block.media_path}")
-        if block:
-            media_path = block.media_path
+        if block and block.media_path and block.media_path not in seen_paths:
+            media_paths.append(block.media_path)
+            seen_paths.add(block.media_path)
 
     if DEBUG_ALIGNMENT:
-        print(f"[ALIGN_INIT] extracted media_path: {media_path}")
+        print(f"[ALIGN_INIT] unique media_paths: {len(media_paths)}")
+        for i, mp in enumerate(media_paths):
+            print(f"[ALIGN_INIT]   [{i}] {mp}")
 
-    # Fetch VAD data
-    chunks = []
-    audio_duration = 0.0
-    if media_path and alignment_service.is_available():
-        if DEBUG_ALIGNMENT:
-            print(f"[ALIGN_INIT] Calling VAD plugin with media_path: {media_path}")
-        chunks, audio_duration = await alignment_service.analyze_audio_async(media_path)
-        if DEBUG_ALIGNMENT:
-            print(f"[ALIGN_INIT] VAD returned {len(chunks)} chunks, duration: {audio_duration:.2f}s")
+    # Fetch VAD data for each audio file
+    all_chunks = []
+    total_duration = 0.0
+    global_index = 0
+
+    if alignment_service.is_available():
+        for file_idx, media_path in enumerate(media_paths):
+            if DEBUG_ALIGNMENT:
+                print(f"[ALIGN_INIT] Analyzing file {file_idx}: {media_path}")
+            chunks, duration = await alignment_service.analyze_audio_async(media_path)
+            if DEBUG_ALIGNMENT:
+                print(f"[ALIGN_INIT]   -> {len(chunks)} chunks, {duration:.2f}s")
+            
+            # Reassign indices: global sequential + audio_file_index
+            for chunk in chunks:
+                chunk.index = global_index
+                chunk.audio_file_index = file_idx
+                global_index += 1
+            
+            all_chunks.extend(chunks)
+            total_duration += duration
+
+    if DEBUG_ALIGNMENT:
+        print(f"[ALIGN_INIT] Total: {len(all_chunks)} chunks, {total_duration:.2f}s across {len(media_paths)} files")
+
+    # Build audio URLs for Web Audio API
+    audio_urls = []
+    if urls.audio_src:
+        audio_urls = [f"{urls.audio_src}?path={mp}" for mp in media_paths]
 
     # Serialize and store
-    chunk_dicts = [c.to_dict() for c in chunks]
+    chunk_dicts = [c.to_dict() for c in all_chunks]
+    media_path = media_paths[0] if media_paths else None
     _update_alignment_state(
         state_store, workflow_id, session_id,
         vad_chunks=chunk_dicts,
@@ -114,18 +136,19 @@ async def _handle_align_init(
         visible_count=visible_count,
         card_width=card_width,
         media_path=media_path,
-        audio_duration=audio_duration,
+        media_paths=media_paths,
+        audio_duration=total_duration,
     )
 
-    # Render column body (Web Audio API handles accurate seeking)
+    # Render column body
     column_body = render_align_column_body(
-        chunks=chunks,
+        chunks=all_chunks,
         focused_index=0,
         visible_count=visible_count,
         card_width=card_width,
         urls=urls,
         kb_system=None,
-        media_path=media_path,
+        audio_urls=audio_urls,
     )
 
     if DEBUG_ALIGNMENT:
@@ -133,11 +156,12 @@ async def _handle_align_init(
 
     return AlignInitResult(
         column_body=column_body,
-        chunks=chunks,
+        chunks=all_chunks,
         focused_index=0,
         visible_count=visible_count,
         card_width=card_width,
         media_path=media_path,
+        media_paths=media_paths,
     )
 
 # %% ../../nbs/routes/handlers.ipynb #zr8z2g6w2x

@@ -29,6 +29,8 @@ from cjm_transcript_vad_align.routes.core import (
     WorkflowStateStore, _load_alignment_context, _update_alignment_state,
     _build_card_stack_state, _to_vad_chunks,
 )
+from ..utils import get_audio_file_boundaries, get_audio_file_count
+from ..components.step_renderer import render_align_source_position
 
 # %% ../../nbs/routes/card_stack.ipynb #align-cs-nav-response
 def _build_nav_response(
@@ -38,13 +40,14 @@ def _build_nav_response(
 ) -> Tuple:  # OOB response elements (slots + progress + focus)
     """Build OOB response for navigation changes."""
     chunks = _to_vad_chunks(chunk_dicts)
+    boundaries = get_audio_file_boundaries(chunks)
     return build_nav_response(
         card_items=chunks,
         state=state,
         config=ALIGN_CS_CONFIG,
         ids=ALIGN_CS_IDS,
         urls=urls.card_stack,
-        render_card=create_vad_card_renderer(),
+        render_card=create_vad_card_renderer(audio_file_boundaries=boundaries),
         progress_label="VAD Chunk",
         form_input_name="chunk_index",
     )
@@ -56,14 +59,15 @@ def _handle_align_navigate(
     sess:Any,  # FastHTML session object
     direction:str,  # Navigation direction: up/down/first/last/page_up/page_down
     urls:AlignmentUrls,  # URL bundle
-) -> Tuple:  # OOB response elements (slots + progress + focus)
+) -> Tuple:  # OOB response elements (slots + progress + focus + source position)
     """Navigate the alignment card stack."""
     session_id = get_session_id(sess)
     ctx = _load_alignment_context(state_store, workflow_id, session_id)
     chunks = _to_vad_chunks(ctx.chunk_dicts)
+    boundaries = get_audio_file_boundaries(chunks)
 
     state = _build_card_stack_state(ctx)
-    renderer = create_vad_card_renderer()
+    renderer = create_vad_card_renderer(audio_file_boundaries=boundaries)
 
     result = card_stack_navigate(
         direction=direction,
@@ -78,6 +82,11 @@ def _handle_align_navigate(
     )
 
     _update_alignment_state(state_store, workflow_id, session_id, focused_chunk_index=state.focused_index)
+    
+    # Append source position OOB if multiple audio files
+    if get_audio_file_count(chunks) > 1:
+        source_pos_oob = render_align_source_position(chunks, state.focused_index, oob=True)
+        return (*result, source_pos_oob)
     return result
 
 # %% ../../nbs/routes/card_stack.ipynb #align-cs-viewport
@@ -93,9 +102,10 @@ async def _handle_align_update_viewport(
     session_id = get_session_id(sess)
     ctx = _load_alignment_context(state_store, workflow_id, session_id)
     chunks = _to_vad_chunks(ctx.chunk_dicts)
+    boundaries = get_audio_file_boundaries(chunks)
 
     state = _build_card_stack_state(ctx)
-    renderer = create_vad_card_renderer()
+    renderer = create_vad_card_renderer(audio_file_boundaries=boundaries)
 
     result = card_stack_update_viewport(
         visible_count=visible_count,

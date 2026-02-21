@@ -79,11 +79,13 @@ from cjm_transcript_vad_align.routes.handlers import AlignInitResult, _handle_al
 
 
 # =============================================================================
-# Test Audio File
+# Test Audio Files
 # =============================================================================
 
-# Path to test audio file (relative to this script)
-TEST_AUDIO_PATH = Path(__file__).parent / "test_files" / "short_test_audio.mp3"
+SEGMENTS_DIR = Path(__file__).parent / "test_files" / "segments_vad"
+
+# Use first 3 segments for quick VAD analysis in demo
+TEST_AUDIO_PATHS = sorted(SEGMENTS_DIR.glob("*.mp3"))[:3] if SEGMENTS_DIR.exists() else []
 
 
 # =============================================================================
@@ -190,10 +192,10 @@ def render_keyboard_hints_collapsible(
 # =============================================================================
 
 class MockSourceService:
-    """Mock source service that provides the test audio file path."""
+    """Mock source service that maps record_ids to audio file paths."""
 
-    def __init__(self, media_path: str):
-        self.media_path = media_path
+    def __init__(self, path_map: Dict[str, str]):
+        self._path_map = path_map
 
     def get_transcription_by_id(self, record_id: str, provider_id: str) -> Any:
         """Return mock source block with media path."""
@@ -203,7 +205,8 @@ class MockSourceService:
         class MockBlock:
             media_path: str
 
-        return MockBlock(media_path=self.media_path)
+        path = self._path_map.get(record_id, "")
+        return MockBlock(media_path=path)
 
 
 # =============================================================================
@@ -473,7 +476,9 @@ def main():
     workflow_id = "align-demo"
 
     print(f"  State store: {temp_db}")
-    print(f"  Test audio: {TEST_AUDIO_PATH}")
+    print(f"  Test audio files: {len(TEST_AUDIO_PATHS)}")
+    for i, p in enumerate(TEST_AUDIO_PATHS):
+        print(f"    [{i}] {p.name}")
 
     # -------------------------------------------------------------------------
     # Set up plugin manager and load VAD plugin
@@ -497,24 +502,27 @@ def main():
     else:
         print(f"  {vad_plugin_name}: not found")
 
-    # Create services
-    source_service = MockSourceService(media_path=str(TEST_AUDIO_PATH))
+    # Create services — map each audio file to a unique record_id
+    path_map = {f"demo-source-{i}": str(p) for i, p in enumerate(TEST_AUDIO_PATHS)}
+    source_service = MockSourceService(path_map=path_map)
     alignment_service = AlignmentService(plugin_manager, vad_plugin_name)
 
-    # Initialize selection state with demo source
+    # Initialize selection state with multiple demo sources
+    selected_sources = [
+        {"record_id": f"demo-source-{i}", "provider_id": "demo-provider"}
+        for i in range(len(TEST_AUDIO_PATHS))
+    ]
+
     def init_demo_state(sess):
-        """Ensure demo state is initialized for session."""
+        """Initialize demo state for session (always overwrites selection)."""
         session_id = get_session_id(sess)
         workflow_state = state_store.get_state(workflow_id, session_id)
         if "step_states" not in workflow_state:
             workflow_state["step_states"] = {}
-        if "selection" not in workflow_state["step_states"]:
-            workflow_state["step_states"]["selection"] = {
-                "selected_sources": [
-                    {"record_id": "demo-source", "provider_id": "demo-provider"}
-                ]
-            }
-            state_store.update_state(workflow_id, session_id, workflow_state)
+        workflow_state["step_states"]["selection"] = {
+            "selected_sources": selected_sources
+        }
+        state_store.update_state(workflow_id, session_id, workflow_state)
 
     # -------------------------------------------------------------------------
     # Audio serving route
