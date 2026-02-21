@@ -19,7 +19,8 @@ class AlignmentStepState(TypedDict, total=False):
     # --- Workflow-specific ---
     is_initialized: bool  # Whether VAD data has been fetched
     vad_chunks: List[Dict[str, Any]]  # VAD chunks (serialized VADChunk)
-    media_path: Optional[str]  # Path to original audio file
+    media_path: Optional[str]  # Path to first audio file (backward compat)
+    media_paths: List[str]  # Ordered list of audio file paths
     audio_duration: Optional[float]  # Total audio duration in seconds
 
     # --- Card stack view state ---
@@ -33,9 +34,10 @@ class AlignmentStepState(TypedDict, total=False):
 class VADChunk:
     """A voice activity detection time range."""
     
-    index: int  # Chunk index in sequence
-    start_time: float  # Start time in seconds
-    end_time: float  # End time in seconds
+    index: int  # Chunk index in sequence (global across all audio files)
+    start_time: float  # Start time in seconds (relative to its audio file)
+    end_time: float  # End time in seconds (relative to its audio file)
+    audio_file_index: int = 0  # Which audio file this chunk belongs to
     
     @property
     def duration(self) -> float:  # Duration in seconds
@@ -55,6 +57,9 @@ class VADChunk:
         data = data.copy()
         # Remove legacy fields if present
         data.pop("assigned_segment", None)
+        # Default audio_file_index for backward compat
+        if "audio_file_index" not in data:
+            data["audio_file_index"] = 0
         return cls(**data)
 
 # %% ../nbs/models.ipynb #align-models-urls

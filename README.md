@@ -53,32 +53,33 @@ graph LR
 
     components_helpers --> models
     components_step_renderer --> components_card_stack_config
-    components_step_renderer --> models
-    components_step_renderer --> components_vad_card
-    components_step_renderer --> components_callbacks
     components_step_renderer --> html_ids
-    components_vad_card --> models
-    components_vad_card --> utils
+    components_step_renderer --> components_callbacks
+    components_step_renderer --> components_vad_card
+    components_step_renderer --> models
     components_vad_card --> html_ids
-    routes_card_stack --> components_card_stack_config
+    components_vad_card --> utils
+    components_vad_card --> models
     routes_card_stack --> routes_core
+    routes_card_stack --> components_card_stack_config
     routes_card_stack --> components_vad_card
     routes_card_stack --> models
     routes_core --> models
-    routes_handlers --> models
-    routes_handlers --> components_step_renderer
     routes_handlers --> routes_core
-    routes_handlers --> html_ids
     routes_handlers --> services_alignment
-    routes_init --> routes_core
+    routes_handlers --> html_ids
+    routes_handlers --> components_step_renderer
+    routes_handlers --> models
     routes_init --> routes_handlers
-    routes_init --> routes_card_stack
     routes_init --> services_alignment
+    routes_init --> routes_card_stack
     routes_init --> models
+    routes_init --> routes_core
     services_alignment --> models
+    utils --> models
 ```
 
-*25 cross-module dependencies detected*
+*26 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -636,9 +637,10 @@ class AlignmentStepState(TypedDict):
 class VADChunk:
     "A voice activity detection time range."
     
-    index: int  # Chunk index in sequence
-    start_time: float  # Start time in seconds
-    end_time: float  # End time in seconds
+    index: int  # Chunk index in sequence (global across all audio files)
+    start_time: float  # Start time in seconds (relative to its audio file)
+    end_time: float  # End time in seconds (relative to its audio file)
+    audio_file_index: int = 0  # Which audio file this chunk belongs to
     
     def duration(self) -> float:  # Duration in seconds
             """Calculate chunk duration."""
@@ -753,7 +755,10 @@ DEBUG_ALIGN_RENDER = False
 
 ``` python
 from cjm_transcript_vad_align.utils import (
-    format_time_precise
+    format_time_precise,
+    get_audio_file_boundaries,
+    get_audio_file_count,
+    get_audio_file_position
 )
 ```
 
@@ -764,6 +769,38 @@ def format_time_precise(
     seconds: Optional[float]  # Time in seconds
 ) -> str:  # Formatted time string (m:ss.s)
     "Format seconds as m:ss.s for sub-second display."
+```
+
+``` python
+def get_audio_file_boundaries(
+    chunks: List["VADChunk"],  # Ordered list of VAD chunks
+) -> Set[int]:  # Indices where audio_file_index changes from the previous chunk
+    """
+    Find indices where audio_file_index changes between adjacent chunks.
+    
+    A boundary at index N means chunk[N].audio_file_index differs from
+    chunk[N-1].audio_file_index.
+    """
+```
+
+``` python
+def get_audio_file_count(
+    chunks: List["VADChunk"],  # Ordered list of VAD chunks
+) -> int:  # Number of unique audio files
+    "Count the number of unique audio files in the chunk list."
+```
+
+``` python
+def get_audio_file_position(
+    chunks: List["VADChunk"],  # Ordered list of VAD chunks
+    focused_index: int,  # Index of the focused chunk
+) -> Optional[int]:  # 1-based position of the audio file, or None
+    """
+    Get the audio file position (1-based) of the focused chunk.
+    
+    Returns which audio file the focused chunk belongs to,
+    based on order of first appearance.
+    """
 ```
 
 ### vad_card (`vad_card.ipynb`)

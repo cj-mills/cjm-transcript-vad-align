@@ -111,4 +111,10 @@ d = { 'settings': { 'branch': 'main',
                                                              'cjm_transcript_vad_align.services.alignment.check_alignment_ready': ( 'services/alignment.html#check_alignment_ready',
                                                                                                                                     'cjm_transcript_vad_align/services/alignment.py')},
             'cjm_transcript_vad_align.utils': { 'cjm_transcript_vad_align.utils.format_time_precise': ( 'utils.html#format_time_precise',
-                                                                                                        'cjm_transcript_vad_align/utils.py')}}}
+                                                                                                        'cjm_transcript_vad_align/utils.py'),
+                                                'cjm_transcript_vad_align.utils.get_audio_file_boundaries': ( 'utils.html#get_audio_file_boundaries',
+                                                                                                              'cjm_transcript_vad_align/utils.py'),
+                                                'cjm_transcript_vad_align.utils.get_audio_file_count': ( 'utils.html#get_audio_file_count',
+                                                                                                         'cjm_transcript_vad_align/utils.py'),
+                                                'cjm_transcript_vad_align.utils.get_audio_file_position': ( 'utils.html#get_audio_file_position',
+                                                                                                            'cjm_transcript_vad_align/utils.py')}}}
