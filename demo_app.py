@@ -458,12 +458,15 @@ def main():
     print("=" * 70)
 
     # Initialize FastHTML app
+    APP_ID = "txvadaln"
+
     app, rt = fast_app(
         pico=False,
         hdrs=[*get_daisyui_headers(), create_theme_persistence_script()],
         title="VAD Alignment Demo",
         htmlkw={'data-theme': 'light'},
-        secret_key="demo-secret-key"
+        session_cookie=f'session_{APP_ID}_',
+        secret_key=f'{APP_ID}-demo-secret',
     )
 
     router = APIRouter(prefix="")
