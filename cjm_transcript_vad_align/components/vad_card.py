@@ -19,11 +19,11 @@ from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui, bor
 # Tailwind utilities
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import w
-from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight, font_family
+from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight, font_family, text_nowrap
 from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import (
-    flex_display, items, justify, gap, grow, shrink
+    flex_display, flex_direction, items, justify, gap, grow, shrink
 )
-from cjm_fasthtml_tailwind.utilities.layout import position, right, top, visibility
+from cjm_fasthtml_tailwind.utilities.layout import position, right, top, display_tw
 from cjm_fasthtml_tailwind.utilities.borders import border
 from cjm_fasthtml_tailwind.utilities.transforms import translate
 from cjm_fasthtml_tailwind.utilities.effects import opacity
@@ -54,7 +54,7 @@ def render_vad_card(
     time_range = Span(
         f"{format_time_precise(chunk.start_time)} \u2192 {format_time_precise(chunk.end_time)}",
         cls=combine_classes(
-            font_size.sm, font_family.mono,
+            font_size.sm, font_family.mono, text_nowrap,
             text_dui.base_content if is_focused else text_dui.base_content.opacity(70)
         )
     )
@@ -70,9 +70,8 @@ def render_vad_card(
         Span(cls=combine_classes(loading, loading_styles.bars, loading_sizes.xs, text_dui.secondary)),
         cls=combine_classes(
             "vad-playing-indicator",
-            position.absolute, right(2), top("1/2"), translate.y("1/2").negative,
-            visibility.invisible,
-        )
+        ),
+        style="visibility:hidden;",
     )
 
     # Boundary borders only on non-focused cards
@@ -97,7 +96,10 @@ def render_vad_card(
             # Time range
             time_range,
 
-            # Spacer
+            # Playing indicator
+            playing_indicator,
+
+            # # Spacer
             Div(cls=str(grow())),
 
             # Duration badge
@@ -105,12 +107,9 @@ def render_vad_card(
 
             cls=combine_classes(
                 card_body, p(3),
-                flex_display, items.center, gap(3)
+                flex_display, flex_direction.row, items.center, gap(3)
             )
         ),
-
-        # Absolutely positioned playing indicator
-        playing_indicator,
 
         id=AlignmentHtmlIds.vad_chunk(chunk.index),
         cls=combine_classes(
