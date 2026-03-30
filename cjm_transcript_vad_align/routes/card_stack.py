@@ -14,7 +14,7 @@ from cjm_fasthtml_interactions.core.state_store import get_session_id
 from cjm_fasthtml_card_stack.core.models import CardStackState
 from cjm_fasthtml_card_stack.core.constants import DEFAULT_CARD_WIDTH
 from cjm_fasthtml_card_stack.routes.handlers import (
-    build_nav_response, card_stack_navigate,
+    build_nav_response, card_stack_navigate, card_stack_navigate_to_index,
     card_stack_update_viewport, card_stack_save_width,
 )
 
@@ -71,6 +71,43 @@ def _handle_align_navigate(
 
     result = card_stack_navigate(
         direction=direction,
+        card_items=chunks,
+        state=state,
+        config=ALIGN_CS_CONFIG,
+        ids=ALIGN_CS_IDS,
+        urls=urls.card_stack,
+        render_card=renderer,
+        progress_label="VAD Chunk",
+        form_input_name="chunk_index",
+    )
+
+    _update_alignment_state(state_store, workflow_id, session_id, focused_chunk_index=state.focused_index)
+    
+    # Append source position OOB if multiple audio files
+    if get_audio_file_count(chunks) > 1:
+        source_pos_oob = render_align_source_position(chunks, state.focused_index, oob=True)
+        return (*result, source_pos_oob)
+    return result
+
+# %% ../../nbs/routes/card_stack.ipynb #tkp02rrkpn
+def _handle_align_navigate_to_index(
+    state_store:WorkflowStateStore,  # The workflow state store
+    workflow_id:str,  # The workflow identifier
+    sess:Any,  # FastHTML session object
+    target_index:int,  # Target item index to navigate to
+    urls:AlignmentUrls,  # URL bundle
+) -> Tuple:  # OOB response elements (slots + progress + focus + source position)
+    """Navigate the alignment card stack to a specific index."""
+    session_id = get_session_id(sess)
+    ctx = _load_alignment_context(state_store, workflow_id, session_id)
+    chunks = _to_vad_chunks(ctx.chunk_dicts)
+    boundaries = get_audio_file_boundaries(chunks)
+
+    state = _build_card_stack_state(ctx)
+    renderer = create_vad_card_renderer(audio_file_boundaries=boundaries)
+
+    result = card_stack_navigate_to_index(
+        target_index=target_index,
         card_items=chunks,
         state=state,
         config=ALIGN_CS_CONFIG,
@@ -187,6 +224,11 @@ def init_card_stack_router(
         """Navigate down by page in alignment."""
         return _handle_align_navigate(state_store, workflow_id, sess, direction="page_down", urls=urls)
 
+    @router
+    def nav_to_index(request, sess, target_index: int):
+        """Navigate to a specific VAD chunk by index."""
+        return _handle_align_navigate_to_index(state_store, workflow_id, sess, target_index=target_index, urls=urls)
+
     # -------------------------------------------------------------------------
     # Viewport and Width
     # -------------------------------------------------------------------------
@@ -214,6 +256,7 @@ def init_card_stack_router(
         "nav_last": nav_last,
         "nav_page_up": nav_page_up,
         "nav_page_down": nav_page_down,
+        "nav_to_index": nav_to_index,
         "update_viewport": update_viewport,
         "save_width": save_width,
     }

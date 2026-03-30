@@ -51,6 +51,7 @@ def init_alignment_routers(
         nav_last=card_stack_routes["nav_last"].to(),
         nav_page_up=card_stack_routes["nav_page_up"].to(),
         nav_page_down=card_stack_routes["nav_page_down"].to(),
+        nav_to_index=card_stack_routes["nav_to_index"].to(),
         update_viewport=card_stack_routes["update_viewport"].to(),
         save_width=card_stack_routes["save_width"].to(),
     )

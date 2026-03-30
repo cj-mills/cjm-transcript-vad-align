@@ -53,29 +53,29 @@ graph LR
 
     components_helpers --> models
     components_step_renderer --> components_card_stack_config
-    components_step_renderer --> components_vad_card
     components_step_renderer --> utils
     components_step_renderer --> components_callbacks
-    components_step_renderer --> html_ids
     components_step_renderer --> models
+    components_step_renderer --> html_ids
+    components_step_renderer --> components_vad_card
     components_vad_card --> utils
-    components_vad_card --> html_ids
     components_vad_card --> models
+    components_vad_card --> html_ids
     routes_card_stack --> components_card_stack_config
-    routes_card_stack --> components_step_renderer
-    routes_card_stack --> components_vad_card
     routes_card_stack --> utils
     routes_card_stack --> routes_core
+    routes_card_stack --> components_step_renderer
     routes_card_stack --> models
+    routes_card_stack --> components_vad_card
     routes_core --> models
     routes_handlers --> routes_core
-    routes_handlers --> services_alignment
-    routes_handlers --> html_ids
-    routes_handlers --> models
     routes_handlers --> components_step_renderer
+    routes_handlers --> models
+    routes_handlers --> html_ids
+    routes_handlers --> services_alignment
+    routes_init --> routes_handlers
     routes_init --> routes_core
     routes_init --> routes_card_stack
-    routes_init --> routes_handlers
     routes_init --> services_alignment
     routes_init --> models
     services_alignment --> models
@@ -229,6 +229,17 @@ def _handle_align_navigate(
     urls:AlignmentUrls,  # URL bundle
 ) -> Tuple:  # OOB response elements (slots + progress + focus + source position)
     "Navigate the alignment card stack."
+```
+
+``` python
+def _handle_align_navigate_to_index(
+    state_store:WorkflowStateStore,  # The workflow state store
+    workflow_id:str,  # The workflow identifier
+    sess:Any,  # FastHTML session object
+    target_index:int,  # Target item index to navigate to
+    urls:AlignmentUrls,  # URL bundle
+) -> Tuple:  # OOB response elements (slots + progress + focus + source position)
+    "Navigate the alignment card stack to a specific index."
 ```
 
 ``` python
