@@ -19,6 +19,7 @@ from cjm_fasthtml_web_audio.js import generate_web_audio_js
 ALIGN_AUDIO_CONFIG = WebAudioConfig(
     namespace="align",
     indicator_selector=".vad-playing-indicator",
+    enable_replay=True,
 )
 
 # %% ../../nbs/components/callbacks.ipynb #align-cb-gen

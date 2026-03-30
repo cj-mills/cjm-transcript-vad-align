@@ -10,6 +10,7 @@ from typing import Tuple
 
 # Keyboard navigation library
 from cjm_fasthtml_keyboard_navigation.core.focus_zone import FocusZone
+from cjm_fasthtml_keyboard_navigation.core.actions import KeyAction
 
 # Card stack library
 from cjm_fasthtml_card_stack.core.config import CardStackConfig
@@ -41,8 +42,17 @@ def create_align_kb_parts(
         config=config,
     )
 
-    # Alignment has only navigation actions (no undo, no split mode)
-    actions = nav_actions
+    # Replay action — Space key to replay current chunk's audio
+    replay_action = KeyAction(
+        key=" ",  # Space
+        js_callback="replayAlignSegment",
+        zone_ids=(card_zone.id,),
+        description="Replay audio",
+        hint_group="Audio",
+    )
+
+    # Combine navigation + replay actions
+    actions = nav_actions + (replay_action,)
     modes = ()  # No sub-modes — alignment uses a single navigation mode
 
     return card_zone, actions, modes
