@@ -79,16 +79,19 @@ def render_vad_card(
     )
 
     # Play button — active on focused card, disabled on context cards
+    # type="button" prevents form submission inside StepFlow's <form> wrapper
     play_icon = lucide_icon("play", size=3)
     if is_focused:
         play_btn = Button(
             play_icon,
+            type="button",
             cls=combine_classes(btn, btn_sizes.xs, btn_colors.primary, btn_modifiers.circle),
             onclick="if(window.replayAlignSegment) window.replayAlignSegment();",
         )
     else:
         play_btn = Button(
             play_icon,
+            type="button",
             cls=combine_classes(btn, btn_sizes.xs, btn_behaviors.disabled, btn_modifiers.circle),
             tabindex="-1",
         )
