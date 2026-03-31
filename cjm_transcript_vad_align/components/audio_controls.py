@@ -12,7 +12,7 @@ from fasthtml.common import Div, Span, Input, Label
 
 # DaisyUI components
 from cjm_fasthtml_daisyui.components.data_input.toggle import toggle, toggle_sizes
-from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui
+from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, bg_dui
 
 # Tailwind utilities
 from cjm_fasthtml_tailwind.utilities.spacing import m
@@ -28,14 +28,29 @@ class AlignAudioControlIds:
     AUDIO_CONTROLS = "sd-align-audio-controls"
 
 # %% ../../nbs/components/audio_controls.ipynb #align-ac-toggle
+# CSS classes for toggle state coloring
+_TOGGLE_BG_OFF = str(bg_dui.error)    # Red when auto-play disabled
+_TOGGLE_BG_ON = str(bg_dui.success)   # Green when auto-play enabled
+
+def _toggle_color_js(toggle_id:str) -> str:  # JS snippet to sync toggle color classes
+    """Generate JS to swap bg-error/bg-success on the toggle based on checked state."""
+    return (
+        f"var _t=document.getElementById('{toggle_id}');"
+        f"if(_t){{_t.classList.remove('{_TOGGLE_BG_OFF}','{_TOGGLE_BG_ON}');"
+        f"_t.classList.add(_t.checked?'{_TOGGLE_BG_ON}':'{_TOGGLE_BG_OFF}');}}"
+    )
+
 def render_align_auto_navigate_toggle(
     enabled:bool=False,  # Whether auto-navigate is enabled
 ) -> Any:  # Auto-navigate toggle component
     """Render auto-navigate toggle switch for alignment audio (client-side only)."""
-    onchange_js = "if(window.setAlignAutoNavigate) window.setAlignAutoNavigate(this.checked);"
+    toggle_id = AlignAudioControlIds.AUTO_NAV_TOGGLE
+    color_js = _toggle_color_js(toggle_id)
+    onchange_js = f"if(window.setAlignAutoNavigate) window.setAlignAutoNavigate(this.checked);{color_js}"
 
     # Only pass checked when enabled (FastHTML renders checked=False as an attribute)
     check_attr = {"checked": True} if enabled else {}
+    color_cls = _TOGGLE_BG_ON if enabled else _TOGGLE_BG_OFF
 
     return Div(
         Label(
@@ -45,9 +60,9 @@ def render_align_auto_navigate_toggle(
             ),
             Input(
                 type="checkbox",
-                id=AlignAudioControlIds.AUTO_NAV_TOGGLE,
+                id=toggle_id,
                 name="auto_navigate",
-                cls=combine_classes(toggle, toggle_sizes.sm),
+                cls=combine_classes(toggle, toggle_sizes.sm, color_cls),
                 onchange=onchange_js,
                 **check_attr,
             ),

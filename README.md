@@ -55,13 +55,14 @@ graph LR
     services_alignment[services.alignment<br/>alignment]
     utils[utils<br/>utils]
 
+    components_callbacks --> components_audio_controls
     components_helpers --> models
+    components_step_renderer --> html_ids
     components_step_renderer --> components_card_stack_config
     components_step_renderer --> components_callbacks
-    components_step_renderer --> utils
-    components_step_renderer --> components_vad_card
-    components_step_renderer --> html_ids
     components_step_renderer --> models
+    components_step_renderer --> components_vad_card
+    components_step_renderer --> utils
     components_step_renderer --> components_audio_controls
     components_vad_card --> html_ids
     components_vad_card --> models
@@ -70,27 +71,27 @@ graph LR
     routes_audio --> models
     routes_card_stack --> components_card_stack_config
     routes_card_stack --> routes_core
-    routes_card_stack --> utils
-    routes_card_stack --> components_vad_card
-    routes_card_stack --> models
     routes_card_stack --> components_step_renderer
+    routes_card_stack --> components_vad_card
+    routes_card_stack --> utils
+    routes_card_stack --> models
     routes_core --> models
-    routes_handlers --> components_step_renderer
-    routes_handlers --> routes_core
     routes_handlers --> html_ids
-    routes_handlers --> services_alignment
+    routes_handlers --> routes_core
     routes_handlers --> models
+    routes_handlers --> components_step_renderer
+    routes_handlers --> services_alignment
     routes_init --> services_alignment
-    routes_init --> models
     routes_init --> routes_audio
-    routes_init --> routes_core
     routes_init --> routes_handlers
+    routes_init --> models
+    routes_init --> routes_core
     routes_init --> routes_card_stack
     services_alignment --> models
     utils --> models
 ```
 
-*33 cross-module dependencies detected*
+*34 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -219,6 +220,21 @@ from cjm_transcript_vad_align.components.audio_controls import (
 #### Functions
 
 ``` python
+def _toggle_color_js(toggle_id:str) -> str:  # JS snippet to sync toggle color classes
+    """Generate JS to swap bg-error/bg-success on the toggle based on checked state."""
+    return (
+        f"var _t=document.getElementById('{toggle_id}');"
+        f"if(_t){{_t.classList.remove('{_TOGGLE_BG_OFF}','{_TOGGLE_BG_ON}');"
+        f"_t.classList.add(_t.checked?'{_TOGGLE_BG_ON}':'{_TOGGLE_BG_OFF}');}}"
+    )
+
+def render_align_auto_navigate_toggle(
+    enabled:bool=False,  # Whether auto-navigate is enabled
+) -> Any:  # Auto-navigate toggle component
+    "Generate JS to swap bg-error/bg-success on the toggle based on checked state."
+```
+
+``` python
 def render_align_auto_navigate_toggle(
     enabled:bool=False,  # Whether auto-navigate is enabled
 ) -> Any:  # Auto-navigate toggle component
@@ -240,6 +256,13 @@ class AlignAudioControlIds:
     "HTML ID constants for alignment audio control elements."
 ```
 
+#### Variables
+
+``` python
+_TOGGLE_BG_OFF  # Red when auto-play disabled
+_TOGGLE_BG_ON  # Green when auto-play enabled
+```
+
 ### callbacks (`callbacks.ipynb`)
 
 > Focus change callback and audio playback JavaScript for the alignment
@@ -255,6 +278,11 @@ from cjm_transcript_vad_align.components.callbacks import (
 ```
 
 #### Functions
+
+``` python
+def _generate_toggle_auto_play_js() -> str:  # JS defining window.toggleAlignAutoPlay
+    "Generate JS for the A key auto-play toggle function."
+```
 
 ``` python
 def generate_align_callbacks_script(
@@ -927,7 +955,7 @@ def render_vad_card(
     has_boundary_above:bool=False,  # Audio file boundary exists above this card
     has_boundary_below:bool=False,  # Audio file boundary exists below this card
 ) -> Any:  # VAD chunk card component
-    "Render a single VAD chunk card with time range, duration, and playing indicator."
+    "Render a single VAD chunk card with time range, duration, playing indicator, and play button."
 ```
 
 ``` python

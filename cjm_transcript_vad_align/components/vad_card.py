@@ -8,12 +8,13 @@ __all__ = ['render_vad_card', 'create_vad_card_renderer']
 # %% ../../nbs/components/vad_card.ipynb #vad-card-imports
 from typing import Any, Callable, Optional, Set
 
-from fasthtml.common import Div, Span
+from fasthtml.common import Button, Div, Span
 
 # DaisyUI components
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_styles
 from cjm_fasthtml_daisyui.components.data_display.card import card, card_body
 from cjm_fasthtml_daisyui.components.feedback.loading import loading, loading_styles, loading_sizes
+from cjm_fasthtml_daisyui.components.actions.button import btn, btn_sizes, btn_colors, btn_behaviors, btn_modifiers
 from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui, border_dui
 
 # Tailwind utilities
@@ -29,6 +30,9 @@ from cjm_fasthtml_tailwind.utilities.transforms import translate
 from cjm_fasthtml_tailwind.utilities.effects import opacity
 from cjm_fasthtml_tailwind.utilities.transitions_and_animation import transition, duration
 from cjm_fasthtml_tailwind.core.base import combine_classes
+
+# Icons
+from cjm_fasthtml_lucide_icons.factory import lucide_icon
 
 # Card stack library
 from cjm_fasthtml_card_stack.core.constants import CardRole
@@ -46,13 +50,13 @@ def render_vad_card(
     has_boundary_above:bool=False,  # Audio file boundary exists above this card
     has_boundary_below:bool=False,  # Audio file boundary exists below this card
 ) -> Any:  # VAD chunk card component
-    """Render a single VAD chunk card with time range, duration, and playing indicator."""
+    """Render a single VAD chunk card with time range, duration, playing indicator, and play button."""
     is_focused = card_role == "focused"
     is_context = card_role == "context"
 
     # Time range display
     time_range = Span(
-        f"{format_time_precise(chunk.start_time)} \u2192 {format_time_precise(chunk.end_time)}",
+        f"{format_time_precise(chunk.start_time)} → {format_time_precise(chunk.end_time)}",
         cls=combine_classes(
             font_size.sm, font_family.mono, text_nowrap,
             text_dui.base_content if is_focused else text_dui.base_content.opacity(70)
@@ -73,6 +77,21 @@ def render_vad_card(
         ),
         style="visibility:hidden;",
     )
+
+    # Play button — active on focused card, disabled on context cards
+    play_icon = lucide_icon("play", size=3)
+    if is_focused:
+        play_btn = Button(
+            play_icon,
+            cls=combine_classes(btn, btn_sizes.xs, btn_colors.primary, btn_modifiers.circle),
+            onclick="if(window.replayAlignSegment) window.replayAlignSegment();",
+        )
+    else:
+        play_btn = Button(
+            play_icon,
+            cls=combine_classes(btn, btn_sizes.xs, btn_behaviors.disabled, btn_modifiers.circle),
+            tabindex="-1",
+        )
 
     # Boundary borders only on non-focused cards
     boundary_cls = ""
@@ -99,11 +118,14 @@ def render_vad_card(
             # Playing indicator
             playing_indicator,
 
-            # # Spacer
+            # Spacer
             Div(cls=str(grow())),
 
             # Duration badge
             duration_badge,
+
+            # Play button
+            play_btn,
 
             cls=combine_classes(
                 card_body, p(3),

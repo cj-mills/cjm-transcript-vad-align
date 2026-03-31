@@ -51,8 +51,17 @@ def create_align_kb_parts(
         hint_group="Audio",
     )
 
-    # Combine navigation + replay actions
-    actions = nav_actions + (replay_action,)
+    # Auto-play toggle action — A key toggles auto-navigate, syncs checkbox + colors
+    auto_play_action = KeyAction(
+        key="a",
+        js_callback="toggleAlignAutoPlay",
+        zone_ids=(card_zone.id,),
+        description="Toggle auto-play",
+        hint_group="Audio",
+    )
+
+    # Combine navigation + audio actions
+    actions = nav_actions + (replay_action, auto_play_action)
     modes = ()  # No sub-modes — alignment uses a single navigation mode
 
     return card_zone, actions, modes
