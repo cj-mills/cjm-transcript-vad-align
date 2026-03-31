@@ -12,14 +12,16 @@ pip install cjm_transcript_vad_align
 ## Project Structure
 
     nbs/
-    ├── components/ (6)
+    ├── components/ (7)
+    │   ├── audio_controls.ipynb     # Audio playback controls for the alignment card stack: auto-navigate toggle
     │   ├── callbacks.ipynb          # Focus change callback and audio playback JavaScript for the alignment card stack
     │   ├── card_stack_config.ipynb  # Card stack configuration, HTML IDs, and button IDs for the VAD alignment card stack
     │   ├── helpers.ipynb            # State getters for the alignment step from InteractionContext
     │   ├── keyboard_config.ipynb    # Alignment-specific keyboard building blocks for assembly into a shared ZoneManager
     │   ├── step_renderer.ipynb      # Composable render functions for the alignment card stack column
     │   └── vad_card.ipynb           # VAD chunk card renderer for the alignment card stack
-    ├── routes/ (4)
+    ├── routes/ (5)
+    │   ├── audio.ipynb       # Route handlers for alignment audio playback controls
     │   ├── card_stack.ipynb  # Card stack operations for the alignment column: navigation, viewport update, width save
     │   ├── core.ipynb        # Alignment state context, getters, and updaters for route handlers
     │   ├── handlers.ipynb    # Workflow-specific alignment handlers: init
@@ -30,12 +32,13 @@ pip install cjm_transcript_vad_align
     ├── models.ipynb    # Data models and URL bundles for the alignment package
     └── utils.ipynb     # Time formatting utilities for VAD alignment display
 
-Total: 14 notebooks across 3 directories
+Total: 16 notebooks across 3 directories
 
 ## Module Dependencies
 
 ``` mermaid
 graph LR
+    components_audio_controls[components.audio_controls<br/>audio_controls]
     components_callbacks[components.callbacks<br/>callbacks]
     components_card_stack_config[components.card_stack_config<br/>card_stack_config]
     components_helpers[components.helpers<br/>helpers]
@@ -44,6 +47,7 @@ graph LR
     components_vad_card[components.vad_card<br/>vad_card]
     html_ids[html_ids<br/>html_ids]
     models[models<br/>models]
+    routes_audio[routes.audio<br/>audio]
     routes_card_stack[routes.card_stack<br/>card_stack]
     routes_core[routes.core<br/>core]
     routes_handlers[routes.handlers<br/>handlers]
@@ -52,37 +56,40 @@ graph LR
     utils[utils<br/>utils]
 
     components_helpers --> models
-    components_step_renderer --> components_card_stack_config
+    components_step_renderer --> models
+    components_step_renderer --> utils
     components_step_renderer --> components_callbacks
     components_step_renderer --> html_ids
     components_step_renderer --> components_vad_card
-    components_step_renderer --> models
-    components_step_renderer --> utils
+    components_step_renderer --> components_card_stack_config
     components_vad_card --> html_ids
-    components_vad_card --> models
     components_vad_card --> utils
-    routes_card_stack --> components_card_stack_config
+    components_vad_card --> models
+    routes_audio --> models
+    routes_audio --> routes_core
+    routes_card_stack --> models
     routes_card_stack --> routes_core
     routes_card_stack --> components_vad_card
     routes_card_stack --> utils
-    routes_card_stack --> models
+    routes_card_stack --> components_card_stack_config
     routes_card_stack --> components_step_renderer
     routes_core --> models
-    routes_handlers --> routes_core
-    routes_handlers --> components_step_renderer
-    routes_handlers --> html_ids
     routes_handlers --> models
+    routes_handlers --> html_ids
     routes_handlers --> services_alignment
-    routes_init --> routes_handlers
+    routes_handlers --> components_step_renderer
+    routes_handlers --> routes_core
     routes_init --> models
-    routes_init --> routes_card_stack
     routes_init --> routes_core
+    routes_init --> routes_handlers
+    routes_init --> routes_audio
     routes_init --> services_alignment
+    routes_init --> routes_card_stack
     services_alignment --> models
     utils --> models
 ```
 
-*29 cross-module dependencies detected*
+*32 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -160,6 +167,78 @@ class AlignmentService:
             media_path: str  # Path to audio/video file
         ) -> tuple[List[VADChunk], float]:  # (VAD chunks, total duration)
         "Analyze audio file synchronously."
+```
+
+### audio (`audio.ipynb`)
+
+> Route handlers for alignment audio playback controls
+
+#### Import
+
+``` python
+from cjm_transcript_vad_align.routes.audio import (
+    init_audio_router
+)
+```
+
+#### Functions
+
+``` python
+def _generate_auto_nav_js(
+    enabled:bool  # Whether auto-navigate is enabled
+) -> str:  # JavaScript to update auto-navigate flag
+    "Generate JS to update auto-navigate flag via shared library."
+```
+
+``` python
+def init_audio_router(
+    state_store:WorkflowStateStore,  # The workflow state store
+    workflow_id:str,  # The workflow identifier
+    prefix:str,  # Base prefix for audio routes
+    urls:AlignmentUrls,  # URL bundle to populate
+) -> Tuple[APIRouter, Dict[str, Callable]]:  # (router, routes dict)
+    "Initialize alignment audio control routes."
+```
+
+### audio_controls (`audio_controls.ipynb`)
+
+> Audio playback controls for the alignment card stack: auto-navigate
+> toggle
+
+#### Import
+
+``` python
+from cjm_transcript_vad_align.components.audio_controls import (
+    AlignAudioControlIds,
+    render_align_auto_navigate_toggle,
+    render_align_audio_controls
+)
+```
+
+#### Functions
+
+``` python
+def render_align_auto_navigate_toggle(
+    enabled:bool=False,  # Whether auto-navigate is enabled
+    toggle_url:str="",  # URL to POST toggle changes to
+) -> Any:  # Auto-navigate toggle component
+    "Render auto-navigate toggle switch for alignment audio."
+```
+
+``` python
+def render_align_audio_controls(
+    auto_navigate:bool=False,  # Whether auto-navigate is enabled
+    auto_nav_url:str="",  # URL for auto-navigate toggle
+    oob:bool=False,  # Whether to render as OOB swap
+) -> Any:  # Combined audio controls component
+    "Render alignment audio controls (auto-navigate toggle)."
+```
+
+#### Classes
+
+``` python
+class AlignAudioControlIds:
+    "HTML ID constants for alignment audio control elements."
 ```
 
 ### callbacks (`callbacks.ipynb`)
@@ -354,6 +433,7 @@ def _update_alignment_state(
     media_path=None,  # First audio file path (backward compat)
     media_paths=None,  # Ordered list of all audio file paths
     audio_duration=None,  # Audio duration
+    auto_navigate=None,  # Auto-navigate flag
 ) -> None
     "Update the alignment step state in the workflow state store."
 ```
@@ -687,6 +767,7 @@ class AlignmentUrls:
     card_stack: CardStackUrls = field(...)
     init: str = ''  # Initialize alignment (fetch VAD data)
     audio_src: str = ''  # Audio file serving URL base
+    toggle_auto_nav: str = ''  # Toggle auto-navigate on/off
 ```
 
 ### step_renderer (`step_renderer.ipynb`)

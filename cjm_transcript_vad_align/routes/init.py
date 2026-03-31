@@ -17,6 +17,7 @@ from ..services.alignment import AlignmentService
 from .core import WorkflowStateStore
 from .card_stack import init_card_stack_router
 from .handlers import init_workflow_router
+from .audio import init_audio_router
 from cjm_transcript_source_select.services.source import SourceService
 
 # %% ../../nbs/routes/init.ipynb #e5f6a7b8
@@ -42,6 +43,9 @@ def init_alignment_routers(
         f"{prefix}/workflow", urls,
         handler_init=wrapped_init,
     )
+    audio_router, audio_routes = init_audio_router(
+        state_store, workflow_id, f"{prefix}/audio", urls
+    )
 
     # Populate the URL bundle using .to() on route functions
     urls.card_stack = CardStackUrls(
@@ -57,13 +61,15 @@ def init_alignment_routers(
     )
     urls.init = workflow_routes["init"].to()
     urls.audio_src = audio_src_url
+    urls.toggle_auto_nav = audio_routes["toggle_auto_nav"].to()
 
     # Merge all routes for external access
     merged_routes = {
         **card_stack_routes,
         **workflow_routes,
+        **audio_routes,
     }
 
-    routers = [card_stack_router, workflow_router]
+    routers = [card_stack_router, workflow_router, audio_router]
 
     return routers, urls, merged_routes

@@ -20,6 +20,7 @@ ALIGN_AUDIO_CONFIG = WebAudioConfig(
     namespace="align",
     indicator_selector=".vad-playing-indicator",
     enable_replay=True,
+    enable_auto_nav=True,
 )
 
 # %% ../../nbs/components/callbacks.ipynb #align-cb-gen
@@ -36,6 +37,7 @@ def generate_align_callbacks_script(
         config=ALIGN_AUDIO_CONFIG,
         focus_input_id=focus_input_id,
         card_stack_id=ids.card_stack,
+        nav_down_btn_id=button_ids.nav_down,
     )
 
     return generate_card_stack_js(

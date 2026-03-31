@@ -74,6 +74,7 @@ from cjm_transcript_vad_align.components.step_renderer import (
     render_align_column_body, render_align_toolbar,
     render_align_footer_content, render_align_mini_stats_text,
 )
+from cjm_transcript_vad_align.components.audio_controls import render_align_audio_controls
 from cjm_transcript_vad_align.routes.init import init_alignment_routers
 from cjm_transcript_vad_align.routes.handlers import AlignInitResult, _handle_align_init
 
@@ -255,11 +256,15 @@ def create_demo_init_wrapper(
             hx_swap_oob="innerHTML"
         )
 
-        # Toolbar OOB (card count selector)
+        # Toolbar OOB (card count selector + audio controls)
         toolbar_oob = Div(
             render_align_toolbar(
                 visible_count=result.visible_count,
                 is_auto_mode=False,
+            ),
+            render_align_audio_controls(
+                auto_navigate=False,
+                auto_nav_url=urls.toggle_auto_nav,
             ),
             id=DemoHtmlIds.SHARED_TOOLBAR,
             hx_swap_oob="innerHTML"

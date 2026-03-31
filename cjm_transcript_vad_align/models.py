@@ -29,6 +29,9 @@ class AlignmentStepState(TypedDict, total=False):
     is_auto_mode: bool  # Whether card count is in auto-adjust mode
     card_width: int  # Card stack width in rem units
 
+    # --- Audio playback ---
+    auto_navigate: bool  # Auto-advance to next chunk when audio finishes
+
 # %% ../nbs/models.ipynb #align-models-chunk
 @dataclass
 class VADChunk:
@@ -75,3 +78,6 @@ class AlignmentUrls:
 
     # Audio serving
     audio_src: str = ""  # Audio file serving URL base
+
+    # Audio controls
+    toggle_auto_nav: str = ""  # Toggle auto-navigate on/off
