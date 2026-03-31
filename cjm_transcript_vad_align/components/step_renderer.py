@@ -110,7 +110,7 @@ def render_align_stats(
     return Div(
         Span(
             stats_text,
-            cls=combine_classes(font_size.sm, text_dui.base_content.opacity(70))
+            cls=combine_classes(font_size.sm, text_dui.base_content)
         ),
         id=AlignmentHtmlIds.ALIGNMENT_STATS,
         hx_swap_oob="true" if oob else None
@@ -134,7 +134,7 @@ def render_align_source_position(
     return Span(
         content,
         id=AlignmentHtmlIds.SOURCE_POSITION,
-        cls=combine_classes(font_size.sm, text_dui.base_content.opacity(70)),
+        cls=combine_classes(font_size.sm, text_dui.base_content),
         hx_swap_oob="true" if oob else None,
     )
 
