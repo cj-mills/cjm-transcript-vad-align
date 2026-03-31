@@ -56,35 +56,35 @@ graph LR
     utils[utils<br/>utils]
 
     components_helpers --> models
-    components_step_renderer --> models
-    components_step_renderer --> utils
     components_step_renderer --> components_callbacks
-    components_step_renderer --> html_ids
     components_step_renderer --> components_vad_card
+    components_step_renderer --> utils
+    components_step_renderer --> models
     components_step_renderer --> components_card_stack_config
-    components_vad_card --> html_ids
+    components_step_renderer --> html_ids
     components_vad_card --> utils
     components_vad_card --> models
+    components_vad_card --> html_ids
     routes_audio --> models
     routes_audio --> routes_core
-    routes_card_stack --> models
-    routes_card_stack --> routes_core
     routes_card_stack --> components_vad_card
+    routes_card_stack --> routes_core
     routes_card_stack --> utils
-    routes_card_stack --> components_card_stack_config
     routes_card_stack --> components_step_renderer
+    routes_card_stack --> components_card_stack_config
+    routes_card_stack --> models
     routes_core --> models
     routes_handlers --> models
+    routes_handlers --> components_step_renderer
     routes_handlers --> html_ids
     routes_handlers --> services_alignment
-    routes_handlers --> components_step_renderer
     routes_handlers --> routes_core
+    routes_init --> routes_audio
     routes_init --> models
     routes_init --> routes_core
-    routes_init --> routes_handlers
-    routes_init --> routes_audio
     routes_init --> services_alignment
     routes_init --> routes_card_stack
+    routes_init --> routes_handlers
     services_alignment --> models
     utils --> models
 ```
@@ -220,15 +220,13 @@ from cjm_transcript_vad_align.components.audio_controls import (
 ``` python
 def render_align_auto_navigate_toggle(
     enabled:bool=False,  # Whether auto-navigate is enabled
-    toggle_url:str="",  # URL to POST toggle changes to
 ) -> Any:  # Auto-navigate toggle component
-    "Render auto-navigate toggle switch for alignment audio."
+    "Render auto-navigate toggle switch for alignment audio (client-side only)."
 ```
 
 ``` python
 def render_align_audio_controls(
     auto_navigate:bool=False,  # Whether auto-navigate is enabled
-    auto_nav_url:str="",  # URL for auto-navigate toggle
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Combined audio controls component
     "Render alignment audio controls (auto-navigate toggle)."

@@ -30,17 +30,8 @@ class AlignAudioControlIds:
 # %% ../../nbs/components/audio_controls.ipynb #align-ac-toggle
 def render_align_auto_navigate_toggle(
     enabled:bool=False,  # Whether auto-navigate is enabled
-    toggle_url:str="",  # URL to POST toggle changes to
 ) -> Any:  # Auto-navigate toggle component
-    """Render auto-navigate toggle switch for alignment audio."""
-    htmx_attrs = {}
-    if toggle_url:
-        htmx_attrs = {
-            "hx_post": toggle_url,
-            "hx_trigger": "change",
-            "hx_swap": "none",
-        }
-
+    """Render auto-navigate toggle switch for alignment audio (client-side only)."""
     onchange_js = "if(window.setAlignAutoNavigate) window.setAlignAutoNavigate(this.checked);"
 
     # Only pass checked when enabled (FastHTML renders checked=False as an attribute)
@@ -59,7 +50,6 @@ def render_align_auto_navigate_toggle(
                 cls=combine_classes(toggle, toggle_sizes.sm),
                 onchange=onchange_js,
                 **check_attr,
-                **htmx_attrs,
             ),
             cls=combine_classes(flex_display, items.center)
         ),
@@ -69,12 +59,11 @@ def render_align_auto_navigate_toggle(
 # %% ../../nbs/components/audio_controls.ipynb #align-ac-container
 def render_align_audio_controls(
     auto_navigate:bool=False,  # Whether auto-navigate is enabled
-    auto_nav_url:str="",  # URL for auto-navigate toggle
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Combined audio controls component
     """Render alignment audio controls (auto-navigate toggle)."""
     return Div(
-        render_align_auto_navigate_toggle(auto_navigate, auto_nav_url),
+        render_align_auto_navigate_toggle(auto_navigate),
         id=AlignAudioControlIds.AUDIO_CONTROLS,
         cls=combine_classes(flex_display, items.center, gap(4)),
         hx_swap_oob="true" if oob else None,

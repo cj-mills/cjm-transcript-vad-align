@@ -262,10 +262,7 @@ def create_demo_init_wrapper(
                 visible_count=result.visible_count,
                 is_auto_mode=False,
             ),
-            render_align_audio_controls(
-                auto_navigate=False,
-                auto_nav_url=urls.toggle_auto_nav,
-            ),
+            render_align_audio_controls(),
             id=DemoHtmlIds.SHARED_TOOLBAR,
             hx_swap_oob="innerHTML"
         )
