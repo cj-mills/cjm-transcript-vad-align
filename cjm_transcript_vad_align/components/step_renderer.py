@@ -53,6 +53,9 @@ from cjm_transcript_vad_align.components.vad_card import (
 from cjm_transcript_vad_align.components.callbacks import (
     generate_align_callbacks_script, ALIGN_AUDIO_CONFIG,
 )
+from cjm_transcript_vad_align.components.audio_controls import (
+    render_align_auto_navigate_toggle,
+)
 
 # Debug flag for alignment rendering tracing (set False in production)
 DEBUG_ALIGN_RENDER = False
@@ -63,8 +66,11 @@ def render_align_toolbar(
     is_auto_mode:bool=False,  # Whether card count is in auto-adjust mode
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Toolbar component
-    """Render the alignment toolbar with card count selector."""
+    """Render the alignment toolbar with auto-play toggle and card count selector."""
     return Div(
+        # Left: Auto-play toggle
+        render_align_auto_navigate_toggle(),
+
         # Spacer
         Div(cls=str(grow())),
 

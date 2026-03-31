@@ -56,40 +56,41 @@ graph LR
     utils[utils<br/>utils]
 
     components_helpers --> models
-    components_step_renderer --> components_callbacks
-    components_step_renderer --> components_vad_card
     components_step_renderer --> utils
+    components_step_renderer --> components_audio_controls
+    components_step_renderer --> html_ids
+    components_step_renderer --> components_callbacks
     components_step_renderer --> models
     components_step_renderer --> components_card_stack_config
-    components_step_renderer --> html_ids
+    components_step_renderer --> components_vad_card
+    components_vad_card --> html_ids
     components_vad_card --> utils
     components_vad_card --> models
-    components_vad_card --> html_ids
     routes_audio --> models
     routes_audio --> routes_core
-    routes_card_stack --> components_vad_card
     routes_card_stack --> routes_core
     routes_card_stack --> utils
-    routes_card_stack --> components_step_renderer
     routes_card_stack --> components_card_stack_config
+    routes_card_stack --> components_vad_card
+    routes_card_stack --> components_step_renderer
     routes_card_stack --> models
     routes_core --> models
+    routes_handlers --> html_ids
+    routes_handlers --> routes_core
     routes_handlers --> models
     routes_handlers --> components_step_renderer
-    routes_handlers --> html_ids
     routes_handlers --> services_alignment
-    routes_handlers --> routes_core
-    routes_init --> routes_audio
     routes_init --> models
     routes_init --> routes_core
     routes_init --> services_alignment
     routes_init --> routes_card_stack
     routes_init --> routes_handlers
+    routes_init --> routes_audio
     services_alignment --> models
     utils --> models
 ```
 
-*32 cross-module dependencies detected*
+*33 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -794,7 +795,7 @@ def render_align_toolbar(
     is_auto_mode:bool=False,  # Whether card count is in auto-adjust mode
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Toolbar component
-    "Render the alignment toolbar with card count selector."
+    "Render the alignment toolbar with auto-play toggle and card count selector."
 ```
 
 ``` python
