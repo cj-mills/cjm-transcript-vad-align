@@ -147,6 +147,7 @@ def render_align_column_body(
     urls:AlignmentUrls,  # URL bundle for alignment routes
     kb_system:Any=None,  # Rendered keyboard system (None when KB managed externally)
     audio_urls:Optional[List[str]]=None,  # Audio file URLs for Web Audio API
+    should_play_fn:str="",  # Consumer-defined play guard function name (overrides default zone guard)
 ) -> Any:  # Div with id=COLUMN_CONTENT
     """Render the alignment column content area with card stack viewport."""
     if DEBUG_ALIGN_RENDER:
@@ -186,6 +187,7 @@ def render_align_column_body(
         urls=urls.card_stack,
         container_id=AlignmentHtmlIds.COLUMN_CONTENT,
         focus_input_id=ALIGN_CS_IDS.focused_index_input,
+        should_play_fn=should_play_fn,
     )
 
     # Keyboard system elements (optional — may be managed at combined-step level)

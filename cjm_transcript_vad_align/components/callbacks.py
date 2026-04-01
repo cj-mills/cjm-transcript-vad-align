@@ -6,6 +6,8 @@
 __all__ = ['ALIGN_AUDIO_CONFIG', 'generate_align_callbacks_script']
 
 # %% ../../nbs/components/callbacks.ipynb #align-cb-imports
+from dataclasses import replace
+
 from cjm_fasthtml_card_stack.core.config import CardStackConfig
 from cjm_fasthtml_card_stack.core.html_ids import CardStackHtmlIds
 from cjm_fasthtml_card_stack.core.button_ids import CardStackButtonIds
@@ -49,10 +51,16 @@ def generate_align_callbacks_script(
     urls:CardStackUrls,  # Card stack URL bundle
     container_id:str,  # ID of the alignment container (parent of card stack)
     focus_input_id:str,  # ID of hidden input for focused chunk index
+    should_play_fn:str="",  # Consumer-defined play guard function name (overrides default zone guard)
 ) -> any:  # Script element with all JavaScript callbacks
     """Generate JavaScript for alignment card stack with Web Audio API audition."""
+    # Use consumer-provided play guard if specified, otherwise use default config
+    audio_config = ALIGN_AUDIO_CONFIG
+    if should_play_fn:
+        audio_config = replace(ALIGN_AUDIO_CONFIG, should_play_fn=should_play_fn)
+
     web_audio_js = generate_web_audio_js(
-        config=ALIGN_AUDIO_CONFIG,
+        config=audio_config,
         focus_input_id=focus_input_id,
         card_stack_id=ids.card_stack,
         nav_down_btn_id=button_ids.nav_down,

@@ -57,36 +57,36 @@ graph LR
 
     components_callbacks --> components_audio_controls
     components_helpers --> models
-    components_step_renderer --> html_ids
-    components_step_renderer --> components_card_stack_config
-    components_step_renderer --> components_callbacks
-    components_step_renderer --> models
-    components_step_renderer --> components_vad_card
     components_step_renderer --> utils
     components_step_renderer --> components_audio_controls
+    components_step_renderer --> html_ids
+    components_step_renderer --> components_callbacks
+    components_step_renderer --> models
+    components_step_renderer --> components_card_stack_config
+    components_step_renderer --> components_vad_card
+    components_vad_card --> utils
     components_vad_card --> html_ids
     components_vad_card --> models
-    components_vad_card --> utils
     routes_audio --> routes_core
     routes_audio --> models
-    routes_card_stack --> components_card_stack_config
     routes_card_stack --> routes_core
+    routes_card_stack --> utils
+    routes_card_stack --> components_card_stack_config
+    routes_card_stack --> models
     routes_card_stack --> components_step_renderer
     routes_card_stack --> components_vad_card
-    routes_card_stack --> utils
-    routes_card_stack --> models
     routes_core --> models
-    routes_handlers --> html_ids
     routes_handlers --> routes_core
-    routes_handlers --> models
     routes_handlers --> components_step_renderer
+    routes_handlers --> html_ids
+    routes_handlers --> models
     routes_handlers --> services_alignment
     routes_init --> services_alignment
+    routes_init --> routes_card_stack
     routes_init --> routes_audio
     routes_init --> routes_handlers
     routes_init --> models
     routes_init --> routes_core
-    routes_init --> routes_card_stack
     services_alignment --> models
     utils --> models
 ```
@@ -292,6 +292,7 @@ def generate_align_callbacks_script(
     urls:CardStackUrls,  # Card stack URL bundle
     container_id:str,  # ID of the alignment container (parent of card stack)
     focus_input_id:str,  # ID of hidden input for focused chunk index
+    should_play_fn:str="",  # Consumer-defined play guard function name (overrides default zone guard)
 ) -> any:  # Script element with all JavaScript callbacks
     "Generate JavaScript for alignment card stack with Web Audio API audition."
 ```
@@ -852,6 +853,7 @@ def render_align_column_body(
     urls:AlignmentUrls,  # URL bundle for alignment routes
     kb_system:Any=None,  # Rendered keyboard system (None when KB managed externally)
     audio_urls:Optional[List[str]]=None,  # Audio file URLs for Web Audio API
+    should_play_fn:str="",  # Consumer-defined play guard function name (overrides default zone guard)
 ) -> Any:  # Div with id=COLUMN_CONTENT
     "Render the alignment column content area with card stack viewport."
 ```
