@@ -26,7 +26,6 @@ from cjm_fasthtml_tailwind.core.base import combine_classes
 
 # Card stack library
 from cjm_fasthtml_card_stack.components.viewport import render_viewport
-from cjm_fasthtml_card_stack.components.controls import render_card_count_select
 from cjm_fasthtml_card_stack.components.progress import render_progress_indicator
 from cjm_fasthtml_card_stack.core.models import CardStackState
 from cjm_fasthtml_card_stack.core.constants import DEFAULT_VISIBLE_COUNT, DEFAULT_CARD_WIDTH
@@ -62,31 +61,12 @@ DEBUG_ALIGN_RENDER = False
 
 # %% ../../nbs/components/step_renderer.ipynb #align-sr-toolbar
 def render_align_toolbar(
-    visible_count:int=DEFAULT_VISIBLE_COUNT,  # Current visible card count
-    is_auto_mode:bool=False,  # Whether card count is in auto-adjust mode
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Toolbar component
-    """Render the alignment toolbar with auto-play toggle and card count selector."""
+    """Render the alignment toolbar with auto-play toggle."""
     return Div(
         # Left: Auto-play toggle
         render_align_auto_navigate_toggle(),
-
-        # Spacer
-        Div(cls=str(grow())),
-
-        # Right: Card count selector
-        Div(
-            Span(
-                "Cards:",
-                cls=combine_classes(font_size.sm, text_dui.base_content.opacity(70), m.r(2))
-            ),
-            render_card_count_select(
-                ALIGN_CS_CONFIG, ALIGN_CS_IDS,
-                current_count=visible_count,
-                is_auto_mode=is_auto_mode,
-            ),
-            cls=combine_classes(flex_display, items.center)
-        ),
 
         id=AlignmentHtmlIds.ALIGNMENT_TOOLBAR,
         cls=combine_classes(flex_display, gap(2), items.center),

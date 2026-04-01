@@ -57,36 +57,36 @@ graph LR
 
     components_callbacks --> components_audio_controls
     components_helpers --> models
-    components_step_renderer --> models
-    components_step_renderer --> components_audio_controls
-    components_step_renderer --> components_callbacks
-    components_step_renderer --> components_card_stack_config
-    components_step_renderer --> components_vad_card
     components_step_renderer --> utils
+    components_step_renderer --> components_audio_controls
+    components_step_renderer --> models
+    components_step_renderer --> components_card_stack_config
     components_step_renderer --> html_ids
-    components_vad_card --> utils
-    components_vad_card --> html_ids
+    components_step_renderer --> components_vad_card
+    components_step_renderer --> components_callbacks
     components_vad_card --> models
-    routes_audio --> models
+    components_vad_card --> html_ids
+    components_vad_card --> utils
     routes_audio --> routes_core
+    routes_audio --> models
     routes_card_stack --> routes_core
-    routes_card_stack --> models
-    routes_card_stack --> components_card_stack_config
-    routes_card_stack --> components_vad_card
     routes_card_stack --> utils
+    routes_card_stack --> components_card_stack_config
     routes_card_stack --> components_step_renderer
+    routes_card_stack --> components_vad_card
+    routes_card_stack --> models
     routes_core --> models
-    routes_handlers --> models
     routes_handlers --> routes_core
-    routes_handlers --> services_alignment
-    routes_handlers --> html_ids
+    routes_handlers --> models
     routes_handlers --> components_step_renderer
+    routes_handlers --> html_ids
+    routes_handlers --> services_alignment
+    routes_init --> services_alignment
+    routes_init --> routes_handlers
     routes_init --> routes_card_stack
+    routes_init --> routes_audio
     routes_init --> models
     routes_init --> routes_core
-    routes_init --> routes_audio
-    routes_init --> routes_handlers
-    routes_init --> services_alignment
     services_alignment --> models
     utils --> models
 ```
@@ -821,11 +821,9 @@ from cjm_transcript_vad_align.components.step_renderer import (
 
 ``` python
 def render_align_toolbar(
-    visible_count:int=DEFAULT_VISIBLE_COUNT,  # Current visible card count
-    is_auto_mode:bool=False,  # Whether card count is in auto-adjust mode
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Toolbar component
-    "Render the alignment toolbar with auto-play toggle and card count selector."
+    "Render the alignment toolbar with auto-play toggle."
 ```
 
 ``` python
