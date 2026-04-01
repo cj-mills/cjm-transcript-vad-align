@@ -60,6 +60,7 @@ async def _handle_align_init(
     urls:AlignmentUrls,  # URL bundle
     visible_count:int=DEFAULT_VISIBLE_COUNT,  # Initial visible card count
     card_width:int=DEFAULT_CARD_WIDTH,  # Initial card width in rem
+    should_play_fn:str="",  # Consumer-defined play guard function name
 ) -> AlignInitResult:  # Pure domain result for wrapper to use
     """Initialize alignment from audio files via VAD plugin.
     
@@ -149,6 +150,7 @@ async def _handle_align_init(
         urls=urls,
         kb_system=None,
         audio_urls=audio_urls,
+        should_play_fn=should_play_fn,
     )
 
     if DEBUG_ALIGNMENT:

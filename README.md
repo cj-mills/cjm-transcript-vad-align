@@ -57,36 +57,36 @@ graph LR
 
     components_callbacks --> components_audio_controls
     components_helpers --> models
-    components_step_renderer --> utils
-    components_step_renderer --> components_audio_controls
-    components_step_renderer --> html_ids
-    components_step_renderer --> components_callbacks
     components_step_renderer --> models
+    components_step_renderer --> components_audio_controls
+    components_step_renderer --> components_callbacks
     components_step_renderer --> components_card_stack_config
     components_step_renderer --> components_vad_card
+    components_step_renderer --> utils
+    components_step_renderer --> html_ids
     components_vad_card --> utils
     components_vad_card --> html_ids
     components_vad_card --> models
-    routes_audio --> routes_core
     routes_audio --> models
+    routes_audio --> routes_core
     routes_card_stack --> routes_core
-    routes_card_stack --> utils
-    routes_card_stack --> components_card_stack_config
     routes_card_stack --> models
-    routes_card_stack --> components_step_renderer
+    routes_card_stack --> components_card_stack_config
     routes_card_stack --> components_vad_card
+    routes_card_stack --> utils
+    routes_card_stack --> components_step_renderer
     routes_core --> models
-    routes_handlers --> routes_core
-    routes_handlers --> components_step_renderer
-    routes_handlers --> html_ids
     routes_handlers --> models
+    routes_handlers --> routes_core
     routes_handlers --> services_alignment
-    routes_init --> services_alignment
+    routes_handlers --> html_ids
+    routes_handlers --> components_step_renderer
     routes_init --> routes_card_stack
-    routes_init --> routes_audio
-    routes_init --> routes_handlers
     routes_init --> models
     routes_init --> routes_core
+    routes_init --> routes_audio
+    routes_init --> routes_handlers
+    routes_init --> services_alignment
     services_alignment --> models
     utils --> models
 ```
@@ -521,6 +521,7 @@ async def _handle_align_init(
     urls:AlignmentUrls,  # URL bundle
     visible_count:int=DEFAULT_VISIBLE_COUNT,  # Initial visible card count
     card_width:int=DEFAULT_CARD_WIDTH,  # Initial card width in rem
+    should_play_fn:str="",  # Consumer-defined play guard function name
 ) -> AlignInitResult:  # Pure domain result for wrapper to use
     """
     Initialize alignment from audio files via VAD plugin.
