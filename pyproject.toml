@@ -1,11 +1,30 @@
 [build-system]
-requires = ["setuptools>=64.0,<76.0"]
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name="cjm-transcript-vad-align"
-requires-python=">=3.12"
-dynamic = [ "keywords", "description", "version", "dependencies", "optional-dependencies", "readme", "license", "authors", "classifiers", "entry-points", "scripts", "urls"]
+name = "cjm-transcript-vad-align"
+dynamic = ["version"]
+description = "FastHTML VAD alignment component for transcript decomposition with Silero VAD audio chunking, card stack navigation with audio playback, and Web Audio API integration."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0"}
+authors = [{name = "Christian J. Mills", email = "9126128+cj-mills@users.noreply.github.com"}]
+keywords = ['nbdev', 'jupyter', 'notebook', 'python']
+classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+dependencies = ['cjm-plugin-system', 'cjm_media_plugin_system', 'cjm-fasthtml-app-core', 'cjm-fasthtml-daisyui', 'cjm_fasthtml_lucide_icons', 'cjm_fasthtml_file_browser', 'cjm_fasthtml_keyboard_navigation', 'cjm_fasthtml_card_stack', 'cjm_fasthtml_token_selector', 'duckdb', 'pandas', 'cjm_workflow_state', 'cjm_source_provider', 'cjm_fasthtml_interactions', 'cjm_transcript_source_select', 'cjm_fasthtml_web_audio']
 
-[tool.uv]
-cache-keys = [{ file = "pyproject.toml" }, { file = "settings.ini" }, { file = "setup.py" }]
+[project.urls]
+Repository = "https://github.com/cj-mills/cjm-transcript-vad-align"
+Documentation = "https://cj-mills.github.io/cjm-transcript-vad-align"
+
+[project.entry-points.nbdev]
+cjm_transcript_vad_align = "cjm_transcript_vad_align._modidx:d"
+
+[tool.setuptools.dynamic]
+version = {attr = "cjm_transcript_vad_align.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["cjm_transcript_vad_align"]
+
+[tool.nbdev]
