@@ -22,6 +22,10 @@ from cjm_fasthtml_tailwind.utilities.typography import font_size
 from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import flex_display, items, gap
 from cjm_fasthtml_tailwind.core.base import combine_classes
 
+# Web Audio library — for initial speed sync helper
+from cjm_fasthtml_web_audio.models import WebAudioConfig
+from cjm_fasthtml_web_audio.components import render_initial_speed_sync
+
 # %% ../../nbs/components/audio_controls.ipynb #align-ac-ids
 class AlignAudioControlIds:
     """HTML ID constants for alignment audio control elements."""
@@ -43,11 +47,27 @@ PLAYBACK_SPEEDS: List[tuple] = [
     (3.0, "3x"),
 ]
 
+# Config for render_initial_speed_sync — only `namespace` and `enable_speed` are read.
+# Defined locally here to avoid a circular import with components.callbacks (which defines
+# the full ALIGN_AUDIO_CONFIG but also imports symbols from this module).
+_SYNC_CONFIG = WebAudioConfig(
+    namespace="align",
+    indicator_selector="",
+    enable_speed=True,
+)
+
 def render_align_speed_selector(
     current_speed:float=1.0,  # Current playback speed
     change_url:str="",  # URL to POST speed changes to (for server persistence)
-) -> Any:  # Speed selector component
-    """Render playback speed selector dropdown for alignment audio."""
+) -> Any:  # Speed selector component (select + sync script)
+    """Render playback speed selector dropdown for alignment audio.
+    
+    When `current_speed != 1.0`, also emits a sync <Script> that calls
+    `window.setAlignSpeed(current_speed)` after insertion. This works around
+    `generate_state_init` resetting `playbackSpeed` to 1.0 on every render —
+    without the sync, the dropdown visually restores the saved speed but
+    the JS state stays at 1.0 until the user interacts with the dropdown.
+    """
     options = [
         Option(
             label,
@@ -82,6 +102,8 @@ def render_align_speed_selector(
             onchange=onchange_js,
             **htmx_attrs,
         ),
+        # Sync JS state to current_speed (no-op when speed == 1.0)
+        render_initial_speed_sync(_SYNC_CONFIG, current_speed),
         cls=combine_classes(flex_display, items.center)
     )
 
