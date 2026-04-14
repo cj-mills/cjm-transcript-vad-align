@@ -62,6 +62,7 @@ def init_alignment_routers(
     urls.init = workflow_routes["init"].to()
     urls.audio_src = audio_src_url
     urls.toggle_auto_nav = audio_routes["toggle_auto_nav"].to()
+    urls.speed_change = audio_routes["speed_change"].to()
 
     # Merge all routes for external access
     merged_routes = {

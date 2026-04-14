@@ -31,6 +31,7 @@ class AlignmentStepState(TypedDict, total=False):
 
     # --- Audio playback ---
     auto_navigate: bool  # Auto-advance to next chunk when audio finishes
+    playback_speed: float  # Pitch-preserving playback speed (1.0 = normal)
 
 # %% ../nbs/models.ipynb #align-models-chunk
 @dataclass
@@ -81,3 +82,4 @@ class AlignmentUrls:
 
     # Audio controls
     toggle_auto_nav: str = ""  # Toggle auto-navigate on/off
+    speed_change: str = ""  # Persist playback speed changes

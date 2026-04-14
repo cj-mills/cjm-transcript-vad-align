@@ -12,7 +12,7 @@ license = {text = "Apache-2.0"}
 authors = [{name = "Christian J. Mills", email = "9126128+cj-mills@users.noreply.github.com"}]
 keywords = ['nbdev', 'jupyter', 'notebook', 'python']
 classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
-dependencies = ['cjm-plugin-system', 'cjm_media_plugin_system', 'cjm-fasthtml-app-core', 'cjm-fasthtml-daisyui', 'cjm_fasthtml_lucide_icons', 'cjm_fasthtml_file_browser', 'cjm_fasthtml_keyboard_navigation', 'cjm_fasthtml_card_stack', 'cjm_fasthtml_token_selector', 'duckdb', 'pandas', 'cjm_workflow_state', 'cjm_source_provider', 'cjm_fasthtml_interactions', 'cjm_transcript_source_select', 'cjm_fasthtml_web_audio']
+dependencies = ['cjm-plugin-system', 'cjm_media_plugin_system', 'cjm-fasthtml-app-core', 'cjm-fasthtml-daisyui', 'cjm_fasthtml_lucide_icons', 'cjm_fasthtml_file_browser', 'cjm_fasthtml_keyboard_navigation', 'cjm_fasthtml_card_stack', 'cjm_fasthtml_token_selector', 'duckdb', 'pandas', 'cjm_workflow_state', 'cjm_source_provider', 'cjm_fasthtml_interactions', 'cjm_transcript_source_select', 'cjm_fasthtml_web_audio>=0.0.8']
 
 [project.urls]
 Repository = "https://github.com/cj-mills/cjm-transcript-vad-align"

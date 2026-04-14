@@ -53,7 +53,7 @@ from cjm_transcript_vad_align.components.callbacks import (
     generate_align_callbacks_script, ALIGN_AUDIO_CONFIG,
 )
 from cjm_transcript_vad_align.components.audio_controls import (
-    render_align_auto_navigate_toggle,
+    render_align_audio_controls,
 )
 
 # Debug flag for alignment rendering tracing (set False in production)
@@ -61,13 +61,18 @@ DEBUG_ALIGN_RENDER = False
 
 # %% ../../nbs/components/step_renderer.ipynb #align-sr-toolbar
 def render_align_toolbar(
+    current_speed:float=1.0,  # Current playback speed
+    auto_navigate:bool=False,  # Whether auto-navigate is enabled
+    speed_url:str="",  # URL for speed-change POST (server persistence)
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Toolbar component
-    """Render the alignment toolbar with auto-play toggle."""
+    """Render the alignment toolbar (speed selector + auto-play toggle)."""
     return Div(
-        # Left: Auto-play toggle
-        render_align_auto_navigate_toggle(),
-
+        render_align_audio_controls(
+            current_speed=current_speed,
+            auto_navigate=auto_navigate,
+            speed_url=speed_url,
+        ),
         id=AlignmentHtmlIds.ALIGNMENT_TOOLBAR,
         cls=combine_classes(flex_display, gap(2), items.center),
         hx_swap_oob="true" if oob else None

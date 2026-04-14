@@ -57,34 +57,34 @@ graph LR
 
     components_callbacks --> components_audio_controls
     components_helpers --> models
-    components_step_renderer --> utils
-    components_step_renderer --> components_audio_controls
-    components_step_renderer --> models
-    components_step_renderer --> components_card_stack_config
-    components_step_renderer --> html_ids
-    components_step_renderer --> components_vad_card
     components_step_renderer --> components_callbacks
-    components_vad_card --> models
-    components_vad_card --> html_ids
+    components_step_renderer --> components_vad_card
+    components_step_renderer --> models
+    components_step_renderer --> utils
+    components_step_renderer --> components_card_stack_config
+    components_step_renderer --> components_audio_controls
+    components_step_renderer --> html_ids
     components_vad_card --> utils
-    routes_audio --> routes_core
+    components_vad_card --> html_ids
+    components_vad_card --> models
     routes_audio --> models
-    routes_card_stack --> routes_core
-    routes_card_stack --> utils
-    routes_card_stack --> components_card_stack_config
-    routes_card_stack --> components_step_renderer
+    routes_audio --> routes_core
     routes_card_stack --> components_vad_card
+    routes_card_stack --> routes_core
     routes_card_stack --> models
+    routes_card_stack --> utils
+    routes_card_stack --> components_step_renderer
+    routes_card_stack --> components_card_stack_config
     routes_core --> models
-    routes_handlers --> routes_core
+    routes_handlers --> services_alignment
     routes_handlers --> models
     routes_handlers --> components_step_renderer
+    routes_handlers --> routes_core
     routes_handlers --> html_ids
-    routes_handlers --> services_alignment
-    routes_init --> services_alignment
     routes_init --> routes_handlers
     routes_init --> routes_card_stack
     routes_init --> routes_audio
+    routes_init --> services_alignment
     routes_init --> models
     routes_init --> routes_core
     services_alignment --> models
@@ -193,6 +193,13 @@ def _generate_auto_nav_js(
 ```
 
 ``` python
+def _generate_speed_change_js(
+    speed:float  # New playback speed
+) -> str:  # JavaScript to update playback speed
+    "Generate JS to update Web Audio API playback speed via shared library."
+```
+
+``` python
 def init_audio_router(
     state_store:WorkflowStateStore,  # The workflow state store
     workflow_id:str,  # The workflow identifier
@@ -211,13 +218,23 @@ def init_audio_router(
 
 ``` python
 from cjm_transcript_vad_align.components.audio_controls import (
+    PLAYBACK_SPEEDS,
     AlignAudioControlIds,
+    render_align_speed_selector,
     render_align_auto_navigate_toggle,
     render_align_audio_controls
 )
 ```
 
 #### Functions
+
+``` python
+def render_align_speed_selector(
+    current_speed:float=1.0,  # Current playback speed
+    change_url:str="",  # URL to POST speed changes to (for server persistence)
+) -> Any:  # Speed selector component
+    "Render playback speed selector dropdown for alignment audio."
+```
 
 ``` python
 def _toggle_color_js(toggle_id:str) -> str:  # JS snippet to sync toggle color classes
@@ -243,10 +260,12 @@ def render_align_auto_navigate_toggle(
 
 ``` python
 def render_align_audio_controls(
+    current_speed:float=1.0,  # Current playback speed
     auto_navigate:bool=False,  # Whether auto-navigate is enabled
+    speed_url:str="",  # URL for speed changes (server persistence)
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Combined audio controls component
-    "Render alignment audio controls (auto-navigate toggle)."
+    "Render alignment audio controls (speed selector + auto-navigate toggle)."
 ```
 
 #### Classes
@@ -259,6 +278,7 @@ class AlignAudioControlIds:
 #### Variables
 
 ``` python
+PLAYBACK_SPEEDS: List[tuple]
 _TOGGLE_BG_OFF  # Red when auto-play disabled
 _TOGGLE_BG_ON  # Green when auto-play enabled
 ```
@@ -462,6 +482,7 @@ def _update_alignment_state(
     media_paths=None,  # Ordered list of all audio file paths
     audio_duration=None,  # Audio duration
     auto_navigate=None,  # Auto-navigate flag
+    playback_speed=None,  # Pitch-preserving playback speed
 ) -> None
     "Update the alignment step state in the workflow state store."
 ```
@@ -797,6 +818,7 @@ class AlignmentUrls:
     init: str = ''  # Initialize alignment (fetch VAD data)
     audio_src: str = ''  # Audio file serving URL base
     toggle_auto_nav: str = ''  # Toggle auto-navigate on/off
+    speed_change: str = ''  # Persist playback speed changes
 ```
 
 ### step_renderer (`step_renderer.ipynb`)
@@ -821,9 +843,12 @@ from cjm_transcript_vad_align.components.step_renderer import (
 
 ``` python
 def render_align_toolbar(
+    current_speed:float=1.0,  # Current playback speed
+    auto_navigate:bool=False,  # Whether auto-navigate is enabled
+    speed_url:str="",  # URL for speed-change POST (server persistence)
     oob:bool=False,  # Whether to render as OOB swap
 ) -> Any:  # Toolbar component
-    "Render the alignment toolbar with auto-play toggle."
+    "Render the alignment toolbar (speed selector + auto-play toggle)."
 ```
 
 ``` python

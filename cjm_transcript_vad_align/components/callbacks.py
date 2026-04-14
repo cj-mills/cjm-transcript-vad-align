@@ -25,6 +25,7 @@ from cjm_transcript_vad_align.components.audio_controls import (
 ALIGN_AUDIO_CONFIG = WebAudioConfig(
     namespace="align",
     indicator_selector=".vad-playing-indicator",
+    enable_speed=True,
     enable_replay=True,
     enable_auto_nav=True,
 )

@@ -27,6 +27,14 @@ def _generate_auto_nav_js(
         if (window.setAlignAutoNavigate) window.setAlignAutoNavigate({enabled_str});
     """
 
+def _generate_speed_change_js(
+    speed:float  # New playback speed
+) -> str:  # JavaScript to update playback speed
+    """Generate JS to update Web Audio API playback speed via shared library."""
+    return f"""
+        if (window.setAlignSpeed) window.setAlignSpeed({speed});
+    """
+
 # %% ../../nbs/routes/audio.ipynb #align-audio-init
 def init_audio_router(
     state_store:WorkflowStateStore,  # The workflow state store
@@ -53,5 +61,19 @@ def init_audio_router(
         return Script(_generate_auto_nav_js(auto_navigate))
 
     routes["toggle_auto_nav"] = toggle_auto_nav
+
+    @router.post("/speed_change")
+    def speed_change(request, sess, speed:float):
+        """Handle playback speed change."""
+        session_id = get_session_id(sess)
+
+        _update_alignment_state(
+            state_store, workflow_id, session_id,
+            playback_speed=speed,
+        )
+
+        return Script(_generate_speed_change_js(speed))
+
+    routes["speed_change"] = speed_change
 
     return router, routes

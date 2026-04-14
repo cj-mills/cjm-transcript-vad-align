@@ -77,6 +77,9 @@ from cjm_transcript_vad_align.components.step_renderer import (
 from cjm_transcript_vad_align.routes.init import init_alignment_routers
 from cjm_transcript_vad_align.routes.handlers import AlignInitResult, _handle_align_init
 
+# Web Audio library — static asset mount (SoundTouch worklet for pitch-preserving speed)
+from cjm_fasthtml_web_audio.components import mount_web_audio_static
+
 
 # =============================================================================
 # Test Audio Files
@@ -262,10 +265,10 @@ def create_demo_init_wrapper(
             card_width=result.card_width,
         )
 
-        # Toolbar OOB (settings trigger + auto-play toggle)
+        # Toolbar OOB (settings trigger + speed selector + auto-play toggle)
         toolbar_oob = Div(
             settings_trigger,
-            render_align_toolbar(),
+            render_align_toolbar(speed_url=urls.speed_change),
             id=DemoHtmlIds.SHARED_TOOLBAR,
             hx_swap_oob="innerHTML"
         )
@@ -471,6 +474,9 @@ def main():
         session_cookie=f'session_{APP_ID}_',
         secret_key=f'{APP_ID}-demo-secret',
     )
+
+    # Mount vendored static assets (SoundTouch worklet for pitch-preserving speed)
+    mount_web_audio_static(app)
 
     router = APIRouter(prefix="")
 

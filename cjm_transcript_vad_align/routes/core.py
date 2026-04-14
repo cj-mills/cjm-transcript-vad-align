@@ -34,6 +34,7 @@ class AlignContext(NamedTuple):
     media_paths: List[str]  # Ordered list of all audio file paths
     audio_duration: Optional[float]  # Total audio duration
     auto_navigate: bool  # Auto-advance to next chunk when audio finishes
+    playback_speed: float  # Pitch-preserving playback speed (1.0 = normal)
 
 # %% ../../nbs/routes/core.ipynb #align-rc-state
 def _get_alignment_state(
@@ -73,6 +74,7 @@ def _load_alignment_context(
         media_paths=state.get("media_paths", []),
         audio_duration=state.get("audio_duration"),
         auto_navigate=state.get("auto_navigate", False),
+        playback_speed=state.get("playback_speed", 1.0),
     )
 
 def _update_alignment_state(
@@ -89,6 +91,7 @@ def _update_alignment_state(
     media_paths=None,  # Ordered list of all audio file paths
     audio_duration=None,  # Audio duration
     auto_navigate=None,  # Auto-navigate flag
+    playback_speed=None,  # Pitch-preserving playback speed
 ) -> None:
     """Update the alignment step state in the workflow state store."""
     if DEBUG_ALIGN_STATE:
@@ -121,6 +124,8 @@ def _update_alignment_state(
         align_state["audio_duration"] = audio_duration
     if auto_navigate is not None:
         align_state["auto_navigate"] = auto_navigate
+    if playback_speed is not None:
+        align_state["playback_speed"] = playback_speed
 
     step_states["alignment"] = align_state
     workflow_state["step_states"] = step_states

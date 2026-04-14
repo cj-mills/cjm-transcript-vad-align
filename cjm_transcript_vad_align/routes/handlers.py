@@ -139,6 +139,7 @@ async def _handle_align_init(
         media_path=media_path,
         media_paths=media_paths,
         audio_duration=total_duration,
+        playback_speed=1.0,
     )
 
     # Render column body
