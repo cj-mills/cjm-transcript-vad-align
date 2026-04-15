@@ -13,9 +13,8 @@ from cjm_fasthtml_card_stack.core.button_ids import CardStackButtonIds
 # %% ../../nbs/components/card_stack_config.ipynb #align-csc-config
 ALIGN_CS_CONFIG = CardStackConfig(
     prefix="sd-align",
-    card_width_min=20,       # Narrower range for compact cards
+    card_width_min=22,       # Narrower range for compact cards
     card_width_max=60,
-    card_width_step=5,
     style=CardStackStyleConfig(
         section_gap="0.75rem",     # Tighter spacing for compact cards
         slot_padding="0.125rem",
