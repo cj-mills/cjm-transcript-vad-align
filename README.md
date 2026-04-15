@@ -57,41 +57,42 @@ graph LR
 
     components_callbacks --> components_audio_controls
     components_helpers --> models
-    components_step_renderer --> components_audio_controls
-    components_step_renderer --> components_callbacks
-    components_step_renderer --> utils
     components_step_renderer --> components_card_stack_config
+    components_step_renderer --> components_callbacks
     components_step_renderer --> models
     components_step_renderer --> components_vad_card
+    components_step_renderer --> utils
+    components_step_renderer --> components_audio_controls
     components_step_renderer --> html_ids
     components_vad_card --> utils
-    components_vad_card --> models
     components_vad_card --> html_ids
-    routes_audio --> routes_core
+    components_vad_card --> models
     routes_audio --> models
-    routes_card_stack --> routes_core
-    routes_card_stack --> components_step_renderer
-    routes_card_stack --> utils
+    routes_audio --> routes_core
+    routes_audio --> components_callbacks
     routes_card_stack --> components_card_stack_config
-    routes_card_stack --> components_vad_card
+    routes_card_stack --> routes_core
     routes_card_stack --> models
+    routes_card_stack --> components_vad_card
+    routes_card_stack --> utils
+    routes_card_stack --> components_step_renderer
     routes_core --> models
+    routes_handlers --> models
     routes_handlers --> components_step_renderer
     routes_handlers --> routes_core
-    routes_handlers --> services_alignment
-    routes_handlers --> models
     routes_handlers --> html_ids
-    routes_init --> routes_core
-    routes_init --> routes_audio
+    routes_handlers --> services_alignment
     routes_init --> services_alignment
-    routes_init --> routes_card_stack
     routes_init --> models
+    routes_init --> routes_card_stack
+    routes_init --> routes_audio
+    routes_init --> routes_core
     routes_init --> routes_handlers
     services_alignment --> models
     utils --> models
 ```
 
-*34 cross-module dependencies detected*
+*35 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -193,13 +194,6 @@ def _generate_auto_nav_js(
 ```
 
 ``` python
-def _generate_speed_change_js(
-    speed:float  # New playback speed
-) -> str:  # JavaScript to update playback speed
-    "Generate JS to update Web Audio API playback speed via shared library."
-```
-
-``` python
 def init_audio_router(
     state_store:WorkflowStateStore,  # The workflow state store
     workflow_id:str,  # The workflow identifier
@@ -218,31 +212,13 @@ def init_audio_router(
 
 ``` python
 from cjm_transcript_vad_align.components.audio_controls import (
-    PLAYBACK_SPEEDS,
     AlignAudioControlIds,
-    render_align_speed_selector,
     render_align_auto_navigate_toggle,
     render_align_audio_controls
 )
 ```
 
 #### Functions
-
-``` python
-def render_align_speed_selector(
-    current_speed:float=1.0,  # Current playback speed
-    change_url:str="",  # URL to POST speed changes to (for server persistence)
-) -> Any:  # Speed selector component (select + sync script)
-    """
-    Render playback speed selector dropdown for alignment audio.
-    
-    When `current_speed != 1.0`, also emits a sync <Script> that calls
-    `window.setAlignSpeed(current_speed)` after insertion. This works around
-    `generate_state_init` resetting `playbackSpeed` to 1.0 on every render —
-    without the sync, the dropdown visually restores the saved speed but
-    the JS state stays at 1.0 until the user interacts with the dropdown.
-    """
-```
 
 ``` python
 def _toggle_color_js(toggle_id:str) -> str:  # JS snippet to sync toggle color classes
@@ -286,8 +262,7 @@ class AlignAudioControlIds:
 #### Variables
 
 ``` python
-PLAYBACK_SPEEDS: List[tuple]
-_SYNC_CONFIG
+_ALIGN_SPEED_CONFIG
 _TOGGLE_BG_OFF  # Red when auto-play disabled
 _TOGGLE_BG_ON  # Green when auto-play enabled
 ```

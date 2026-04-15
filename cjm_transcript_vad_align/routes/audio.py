@@ -12,10 +12,14 @@ from fasthtml.common import APIRouter, Script
 
 from cjm_fasthtml_interactions.core.state_store import get_session_id
 
+# Web Audio library — shared speed-change JS generator
+from cjm_fasthtml_web_audio.js import generate_speed_change_js
+
 from ..models import AlignmentUrls
 from cjm_transcript_vad_align.routes.core import (
     WorkflowStateStore, _update_alignment_state
 )
+from ..components.callbacks import ALIGN_AUDIO_CONFIG
 
 # %% ../../nbs/routes/audio.ipynb #align-audio-toggle-js
 def _generate_auto_nav_js(
@@ -25,14 +29,6 @@ def _generate_auto_nav_js(
     enabled_str = "true" if enabled else "false"
     return f"""
         if (window.setAlignAutoNavigate) window.setAlignAutoNavigate({enabled_str});
-    """
-
-def _generate_speed_change_js(
-    speed:float  # New playback speed
-) -> str:  # JavaScript to update playback speed
-    """Generate JS to update Web Audio API playback speed via shared library."""
-    return f"""
-        if (window.setAlignSpeed) window.setAlignSpeed({speed});
     """
 
 # %% ../../nbs/routes/audio.ipynb #align-audio-init
@@ -72,7 +68,7 @@ def init_audio_router(
             playback_speed=speed,
         )
 
-        return Script(_generate_speed_change_js(speed))
+        return Script(generate_speed_change_js(ALIGN_AUDIO_CONFIG, speed))
 
     routes["speed_change"] = speed_change
 
