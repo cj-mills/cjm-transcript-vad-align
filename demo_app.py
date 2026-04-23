@@ -26,15 +26,13 @@ from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_styl
 from cjm_fasthtml_daisyui.components.data_display.collapse import (
     collapse, collapse_title, collapse_content, collapse_modifiers
 )
-from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui, border_dui
-from cjm_fasthtml_daisyui.utilities.border_radius import border_radius
+from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui
 
 # Tailwind utilities
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import w, h, min_h, container, max_w
 from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight, text_align, uppercase, tracking
 from cjm_fasthtml_tailwind.utilities.layout import overflow
-from cjm_fasthtml_tailwind.utilities.borders import border
 from cjm_fasthtml_tailwind.utilities.effects import ring
 from cjm_fasthtml_tailwind.utilities.transitions_and_animation import transition, duration
 from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import (
@@ -45,6 +43,10 @@ from cjm_fasthtml_tailwind.core.base import combine_classes
 # App core
 from cjm_fasthtml_app_core.core.routing import register_routes
 from cjm_fasthtml_app_core.core.htmx import handle_htmx_request
+
+# Design system recipes (V10 panel / chrome variants)
+from cjm_fasthtml_design_system.panels import panels
+from cjm_fasthtml_design_system.chrome import chrome
 
 # Interactions library
 from cjm_fasthtml_interactions.core.state_store import get_session_id
@@ -333,8 +335,7 @@ def render_demo_page(
             id=DemoHtmlIds.COLUMN_HEADER,
             cls=combine_classes(
                 flex_display, justify.between, items.center,
-                p(3), bg_dui.base_200,
-                border_dui.base_300, border.b()
+                chrome.column_header,
             )
         )
 
@@ -358,8 +359,7 @@ def render_demo_page(
             w.full, max_w._4xl, m.x.auto,
             min_h(0),
             flex_display, flex_direction.col,
-            bg_dui.base_100, border_dui.base_300, border(1),
-            border_radius.box,
+            panels.structural_container,
             overflow.hidden,
             transition.all, duration._200,
             ring(1), "ring-primary",
@@ -395,9 +395,8 @@ def render_demo_page(
               cls=combine_classes(font_size.sm, text_dui.base_content.opacity(50))),
             id=DemoHtmlIds.SHARED_FOOTER,
             cls=combine_classes(
-                p(1), bg_dui.base_100,
-                border_dui.base_300, border.t(),
-                flex_display, justify.center, items.center
+                chrome.column_footer,
+                flex_display, justify.center, items.center,
             )
         )
 
