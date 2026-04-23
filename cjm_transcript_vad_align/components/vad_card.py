@@ -12,7 +12,7 @@ from fasthtml.common import Button, Div, Span
 
 # DaisyUI components
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_styles
-from cjm_fasthtml_daisyui.components.data_display.card import card, card_body
+from cjm_fasthtml_daisyui.components.data_display.card import card_body
 from cjm_fasthtml_daisyui.components.feedback.loading import loading, loading_styles, loading_sizes
 from cjm_fasthtml_daisyui.components.actions.button import btn, btn_sizes, btn_colors, btn_behaviors, btn_modifiers
 from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui, border_dui
@@ -37,6 +37,9 @@ from cjm_fasthtml_lucide_icons.factory import lucide_icon
 # Card stack library
 from cjm_fasthtml_card_stack.core.constants import CardRole
 from cjm_fasthtml_card_stack.core.models import CardRenderContext
+
+# Design system recipes (V10 P5 content_card)
+from cjm_fasthtml_design_system.panels import panels
 
 # Local imports
 from ..html_ids import AlignmentHtmlIds
@@ -138,9 +141,8 @@ def render_vad_card(
 
         id=AlignmentHtmlIds.vad_chunk(chunk.index),
         cls=combine_classes(
-            card, "vad-card",
+            panels.content_card, "vad-card",
             position.relative,
-            bg_dui.base_100,
             w.full,
             transition.all, duration(150),
             boundary_cls,
