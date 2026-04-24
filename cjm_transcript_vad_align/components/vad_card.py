@@ -38,8 +38,9 @@ from cjm_fasthtml_lucide_icons.factory import lucide_icon
 from cjm_fasthtml_card_stack.core.constants import CardRole
 from cjm_fasthtml_card_stack.core.models import CardRenderContext
 
-# Design system recipes (V10 P5 content_card)
+# Design system recipes (V10 P5 content_card, V11 icon-size roles)
 from cjm_fasthtml_design_system.panels import panels
+from cjm_fasthtml_design_system.icons import icons
 
 # Local imports
 from ..html_ids import AlignmentHtmlIds
@@ -83,7 +84,7 @@ def render_vad_card(
 
     # Play button — active on focused card, disabled on context cards
     # type="button" prevents form submission inside StepFlow's <form> wrapper
-    play_icon = lucide_icon("play", size=3)
+    play_icon = lucide_icon("play", size=icons.compact_button)
     if is_focused:
         play_btn = Button(
             play_icon,
