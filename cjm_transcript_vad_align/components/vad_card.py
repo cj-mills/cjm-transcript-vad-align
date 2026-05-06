@@ -17,6 +17,8 @@ from cjm_fasthtml_daisyui.components.feedback.loading import loading, loading_st
 from cjm_fasthtml_daisyui.components.actions.button import btn, btn_sizes, btn_colors, btn_behaviors, btn_modifiers
 from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui, border_dui
 
+from cjm_fasthtml_design_system.text_tiers import text_tiers
+
 # Tailwind utilities
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import w
@@ -63,7 +65,7 @@ def render_vad_card(
         f"{format_time_precise(chunk.start_time)} → {format_time_precise(chunk.end_time)}",
         cls=combine_classes(
             font_size.sm, font_family.mono, text_nowrap,
-            text_dui.base_content if is_focused else text_dui.base_content.opacity(70)
+            text_dui.base_content if is_focused else text_tiers.secondary
         )
     )
 

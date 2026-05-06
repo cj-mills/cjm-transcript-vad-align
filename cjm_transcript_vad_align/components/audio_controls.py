@@ -14,6 +14,8 @@ from fasthtml.common import Div, Span, Input, Label
 from cjm_fasthtml_daisyui.components.data_input.toggle import toggle, toggle_sizes
 from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, bg_dui
 
+from cjm_fasthtml_design_system.text_tiers import text_tiers
+
 # Tailwind utilities
 from cjm_fasthtml_tailwind.utilities.spacing import m
 from cjm_fasthtml_tailwind.utilities.typography import font_size
@@ -70,7 +72,7 @@ def render_align_auto_navigate_toggle(
         Label(
             Span(
                 "Auto-play:",
-                cls=combine_classes(font_size.sm, text_dui.base_content.opacity(70), m.r(2))
+                cls=combine_classes(font_size.sm, text_tiers.secondary, m.r(2))
             ),
             Input(
                 type="checkbox",

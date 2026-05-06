@@ -47,6 +47,7 @@ from cjm_fasthtml_app_core.core.htmx import handle_htmx_request
 # Design system recipes (V10 panel / chrome variants)
 from cjm_fasthtml_design_system.panels import panels
 from cjm_fasthtml_design_system.chrome import chrome
+from cjm_fasthtml_design_system.text_tiers import text_tiers
 
 # Interactions library
 from cjm_fasthtml_interactions.core.state_store import get_session_id
@@ -324,7 +325,7 @@ def render_demo_page(
                 cls=combine_classes(
                     font_size.sm, font_weight.bold,
                     uppercase, tracking.wide,
-                    text_dui.base_content.opacity(50)
+                    text_tiers.muted
                 )
             ),
             Span(
@@ -375,14 +376,14 @@ def render_demo_page(
         # Placeholder chrome
         hints = Div(
             P("Keyboard hints will appear here after initialization.",
-              cls=combine_classes(font_size.sm, text_dui.base_content.opacity(50))),
+              cls=combine_classes(font_size.sm, text_tiers.muted)),
             id=DemoHtmlIds.SHARED_HINTS,
             cls=str(p(2))
         )
 
         toolbar = Div(
             P("Toolbar will appear here after initialization.",
-              cls=combine_classes(font_size.sm, text_dui.base_content.opacity(50))),
+              cls=combine_classes(font_size.sm, text_tiers.muted)),
             id=DemoHtmlIds.SHARED_TOOLBAR,
             cls=str(p(2))
         )
@@ -392,7 +393,7 @@ def render_demo_page(
 
         footer = Div(
             P("Footer with progress will appear here after initialization.",
-              cls=combine_classes(font_size.sm, text_dui.base_content.opacity(50))),
+              cls=combine_classes(font_size.sm, text_tiers.muted)),
             id=DemoHtmlIds.SHARED_FOOTER,
             cls=combine_classes(
                 chrome.column_footer,
@@ -410,7 +411,7 @@ def render_demo_page(
                    cls=combine_classes(font_size._3xl, font_weight.bold)),
                 P(
                     "Navigate VAD chunks with keyboard. Audio plays automatically on navigation.",
-                    cls=combine_classes(text_dui.base_content.opacity(70), m.b(2))
+                    cls=combine_classes(text_tiers.secondary, m.b(2))
                 ),
             ),
 
