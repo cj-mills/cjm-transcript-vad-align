@@ -12,7 +12,7 @@ import tempfile
 
 from fasthtml.common import (
     fast_app, Div, H1, P, Span, Button, Input, Script, Audio,
-    APIRouter, Details, Summary, FileResponse,
+    APIRouter, FileResponse,
 )
 
 # Plugin system
@@ -23,9 +23,6 @@ from cjm_plugin_system.core.scheduling import SafetyScheduler
 from cjm_fasthtml_daisyui.core.resources import get_daisyui_headers
 from cjm_fasthtml_daisyui.core.testing import create_theme_persistence_script
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_styles, badge_sizes
-from cjm_fasthtml_daisyui.components.data_display.collapse import (
-    collapse, collapse_title, collapse_content, collapse_modifiers
-)
 from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui
 
 # Tailwind utilities
@@ -58,7 +55,7 @@ from cjm_workflow_state.state_store import SQLiteWorkflowStateStore
 # Keyboard navigation
 from cjm_fasthtml_keyboard_navigation.core.manager import ZoneManager
 from cjm_fasthtml_keyboard_navigation.components.system import render_keyboard_system
-from cjm_fasthtml_keyboard_navigation.components.hints import render_keyboard_hints
+from cjm_fasthtml_keyboard_navigation.components.hints_modal import render_keyboard_hints_modal
 
 # Card stack library
 from cjm_fasthtml_card_stack.keyboard.actions import build_card_stack_url_map
@@ -106,7 +103,12 @@ class DemoHtmlIds:
     COLUMN_CONTENT = "align-demo-column-content"
     MINI_STATS = "align-demo-mini-stats"
     KEYBOARD_SYSTEM = "align-demo-kb-system"
-    SHARED_HINTS = "align-demo-hints"
+    # Keyboard-hints modal (cjm-fasthtml-keyboard-navigation 0.0.22+):
+    # the modal is rendered at init time (after kb_manager exists) and
+    # OOB-swapped into the three containers below.
+    HINTS_TRIGGER = "align-demo-hints-trigger"  # ghost icon button in header
+    HINTS_MODAL = "align-demo-hints-modal"      # Dialog element (page body)
+    HINTS_SCRIPT = "align-demo-hints-script"    # global `?` key listener Script
     SHARED_TOOLBAR = "align-demo-toolbar"
     SHARED_FOOTER = "align-demo-footer"
     SETTINGS_MODAL = "align-demo-settings-modal"
@@ -164,33 +166,6 @@ def build_single_zone_kb_system(
     )
 
     return kb_manager, kb_system
-
-
-def render_keyboard_hints_collapsible(
-    manager: ZoneManager,
-    container_id: str = "align-demo-kb-hints",
-) -> Any:
-    """Render keyboard shortcut hints in a collapsible DaisyUI collapse."""
-    hints = render_keyboard_hints(
-        manager,
-        include_navigation=True,
-        include_zone_switch=False,
-        badge_style="outline",
-        container_id=container_id,
-        use_icons=False
-    )
-
-    return Details(
-        Summary(
-            "Keyboard Shortcuts",
-            cls=combine_classes(collapse_title, font_size.sm, font_weight.medium)
-        ),
-        Div(
-            hints,
-            cls=collapse_content
-        ),
-        cls=combine_classes(collapse, collapse_modifiers.arrow, bg_dui.base_200)
-    )
 
 
 # =============================================================================
@@ -254,11 +229,27 @@ def create_demo_init_wrapper(
             hx_swap_oob="innerHTML"
         )
 
-        # Hints OOB
-        hints_oob = Div(
-            render_keyboard_hints_collapsible(kb_manager),
-            id=DemoHtmlIds.SHARED_HINTS,
-            hx_swap_oob="innerHTML"
+        # Keyboard-hints modal: three pieces OOB-swapped into their containers.
+        # The trigger goes in the header (paired with the demo title); the
+        # modal Dialog + global `?` key listener Script go in the page body.
+        hints_modal, hints_trigger, hints_script = render_keyboard_hints_modal(
+            kb_manager,
+            modal_id=DemoHtmlIds.HINTS_MODAL + "-dialog",
+        )
+        hints_trigger_oob = Div(
+            hints_trigger,
+            id=DemoHtmlIds.HINTS_TRIGGER,
+            hx_swap_oob="innerHTML",
+        )
+        hints_modal_oob = Div(
+            hints_modal,
+            id=DemoHtmlIds.HINTS_MODAL,
+            hx_swap_oob="innerHTML",
+        )
+        hints_script_oob = Div(
+            hints_script,
+            id=DemoHtmlIds.HINTS_SCRIPT,
+            hx_swap_oob="innerHTML",
         )
 
         # Settings modal
@@ -299,7 +290,8 @@ def create_demo_init_wrapper(
         )
 
         return (
-            result.column_body, kb_system_oob, hints_oob,
+            result.column_body, kb_system_oob,
+            hints_trigger_oob, hints_modal_oob, hints_script_oob,
             toolbar_oob, settings_modal_oob, footer_oob, mini_stats_oob,
         )
 
@@ -373,14 +365,6 @@ def render_demo_page(
             cls=column_cls
         )
 
-        # Placeholder chrome
-        hints = Div(
-            P("Keyboard hints will appear here after initialization.",
-              cls=combine_classes(font_size.sm, text_tiers.muted)),
-            id=DemoHtmlIds.SHARED_HINTS,
-            cls=str(p(2))
-        )
-
         toolbar = Div(
             P("Toolbar will appear here after initialization.",
               cls=combine_classes(font_size.sm, text_tiers.muted)),
@@ -405,18 +389,24 @@ def render_demo_page(
         kb_container = Div(id=DemoHtmlIds.KEYBOARD_SYSTEM)
 
         return Div(
-            # Header
+            # Header — title + description on left, keyboard-hints trigger on
+            # right. The trigger container is OOB-swapped at init once kb_manager
+            # exists; the placeholder Div renders empty before init.
             Div(
-                H1("VAD Alignment Demo",
-                   cls=combine_classes(font_size._3xl, font_weight.bold)),
-                P(
-                    "Navigate VAD chunks with keyboard. Audio plays automatically on navigation.",
-                    cls=combine_classes(text_tiers.secondary, m.b(2))
+                Div(
+                    H1("VAD Alignment Demo",
+                       cls=combine_classes(font_size._3xl, font_weight.bold)),
+                    P(
+                        "Navigate VAD chunks with keyboard. Audio plays automatically on navigation. "
+                        "Press ? for keyboard shortcuts.",
+                        cls=combine_classes(text_tiers.secondary, m.b(2))
+                    ),
                 ),
+                Div(id=DemoHtmlIds.HINTS_TRIGGER),
+                cls=combine_classes(flex_display, items.start, justify.between, m.b(2)),
             ),
 
-            # Shared chrome
-            hints,
+            # Shared toolbar (settings + speed selector + auto-play toggle)
             toolbar,
 
             # Content area
@@ -440,6 +430,13 @@ def render_demo_page(
 
             # Settings modal container
             settings_modal_container,
+
+            # Keyboard-hints modal containers (OOB-swapped at init).
+            # The modal Dialog mounts as a sibling of the main content; the
+            # global `?` key listener Script mounts wherever — its effect is
+            # document-wide via document.addEventListener('keydown', ...).
+            Div(id=DemoHtmlIds.HINTS_MODAL),
+            Div(id=DemoHtmlIds.HINTS_SCRIPT),
 
             id=DemoHtmlIds.CONTAINER,
             cls=combine_classes(

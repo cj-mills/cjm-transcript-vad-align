@@ -27,12 +27,17 @@ def create_align_kb_parts(
     config:CardStackConfig,  # Card stack configuration
 ) -> Tuple[FocusZone, tuple, tuple]:  # (zone, actions, modes)
     """Create alignment-specific keyboard building blocks."""
-    # Card stack zone from library
+    # Card stack zone from library.
     # Note: No data_attributes needed — onAlignFocusChange callback manually updates the
-    # card stack hidden input and reads start/end times directly from card DOM elements
+    # card stack hidden input and reads start/end times directly from card DOM elements.
+    # The `label` drives per-zone section headers in the keyboard-hints modal
+    # (cjm-fasthtml-keyboard-navigation 0.0.22+) — appears as
+    # "VAD Alignment — Navigation" / "VAD Alignment — Audio" / etc. when this manager
+    # is merged with segmentation's into segment-align's combined ZoneManager.
     card_zone = create_card_stack_focus_zone(
         ids=ids,
         on_focus_change="onAlignFocusChange",
+        label="VAD Alignment",
     )
 
     # Card stack navigation actions from library (arrows, page jump, first/last, width)
