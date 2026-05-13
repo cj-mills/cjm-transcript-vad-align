@@ -8,7 +8,8 @@ __all__ = ['init_audio_router']
 # %% ../../nbs/routes/audio.ipynb #align-audio-imports
 from typing import Dict, Callable, Tuple
 
-from fasthtml.common import APIRouter, Script
+from fasthtml.common import Script
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_interactions.core.state_store import get_session_id
 

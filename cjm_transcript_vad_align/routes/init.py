@@ -8,7 +8,7 @@ __all__ = ['init_alignment_routers']
 # %% ../../nbs/routes/init.ipynb #c3d4e5f6
 from typing import List, Dict, Callable, Tuple
 
-from fasthtml.common import APIRouter
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_card_stack.core.models import CardStackUrls
 

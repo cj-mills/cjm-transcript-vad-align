@@ -8,7 +8,7 @@ __all__ = ['init_card_stack_router']
 # %% ../../nbs/routes/card_stack.ipynb #align-cs-imports
 from typing import Any, Dict, List, Tuple, Callable
 
-from fasthtml.common import APIRouter
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_interactions.core.state_store import get_session_id
 from cjm_fasthtml_card_stack.core.models import CardStackState

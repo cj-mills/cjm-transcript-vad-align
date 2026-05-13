@@ -8,7 +8,8 @@ __all__ = ['DEBUG_ALIGNMENT', 'AlignInitResult', 'init_workflow_router']
 # %% ../../nbs/routes/handlers.ipynb #align-hd-imports
 from typing import Any, Dict, List, Tuple, Callable, NamedTuple
 
-from fasthtml.common import Span, APIRouter
+from fasthtml.common import Span
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_interactions.core.state_store import get_session_id
 from cjm_fasthtml_card_stack.core.constants import DEFAULT_VISIBLE_COUNT, DEFAULT_CARD_WIDTH
