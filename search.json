@@ -1,0 +1,613 @@
+[
+  {
+    "objectID": "models.html",
+    "href": "models.html",
+    "title": "models",
+    "section": "",
+    "text": "TypedDict for Phase 2 right column (VAD alignment) state.\n\n\n\n\ndef AlignmentStepState(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nState for Phase 2 (right column): Temporal Alignment.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#alignmentstepstate",
+    "href": "models.html#alignmentstepstate",
+    "title": "models",
+    "section": "",
+    "text": "TypedDict for Phase 2 right column (VAD alignment) state.\n\n\n\n\ndef AlignmentStepState(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nState for Phase 2 (right column): Temporal Alignment.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#vadchunk",
+    "href": "models.html#vadchunk",
+    "title": "models",
+    "section": "VADChunk",
+    "text": "VADChunk\nRepresents a voice activity detection time range from the VAD plugin.\n\n\nVADChunk\n\ndef VADChunk(\n    index:int, start_time:float, end_time:float, audio_file_index:int=0\n)-&gt;None:\n\nA voice activity detection time range.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#alignmenturls",
+    "href": "models.html#alignmenturls",
+    "title": "models",
+    "section": "AlignmentUrls",
+    "text": "AlignmentUrls\nURL bundle for Phase 2 alignment route handlers and renderers.\n\n\nAlignmentUrls\n\ndef AlignmentUrls(\n    card_stack:CardStackUrls=&lt;factory&gt;, init:str='', audio_src:str='', toggle_auto_nav:str='', speed_change:str=''\n)-&gt;None:\n\nURL bundle for Phase 2 alignment route handlers and renderers.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#tests",
+    "href": "models.html#tests",
+    "title": "models",
+    "section": "Tests",
+    "text": "Tests\n\n# VADChunk with audio_file_index\nchunk = VADChunk(index=0, start_time=1.0, end_time=3.5, audio_file_index=2)\nassert chunk.audio_file_index == 2\nassert chunk.duration == 2.5\nd = chunk.to_dict()\nassert d[\"audio_file_index\"] == 2\nassert VADChunk.from_dict(d).audio_file_index == 2\n\n# Backward compat: missing audio_file_index defaults to 0\nlegacy = {\"index\": 5, \"start_time\": 0.0, \"end_time\": 1.0}\nassert VADChunk.from_dict(legacy).audio_file_index == 0\n\n# Legacy field removal still works\nlegacy_with_assigned = {\"index\": 0, \"start_time\": 0.0, \"end_time\": 1.0, \"assigned_segment\": None}\nassert VADChunk.from_dict(legacy_with_assigned).audio_file_index == 0\nprint(\"VADChunk model tests passed\")",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "routes/core.html",
+    "href": "routes/core.html",
+    "title": "core",
+    "section": "",
+    "text": "Common state values loaded by alignment handlers in a single call.\n\n\n\n\ndef AlignContext(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nCommon alignment state values loaded by handlers.",
+    "crumbs": [
+      "routes",
+      "core"
+    ]
+  },
+  {
+    "objectID": "routes/core.html#aligncontext",
+    "href": "routes/core.html#aligncontext",
+    "title": "core",
+    "section": "",
+    "text": "Common state values loaded by alignment handlers in a single call.\n\n\n\n\ndef AlignContext(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nCommon alignment state values loaded by handlers.",
+    "crumbs": [
+      "routes",
+      "core"
+    ]
+  },
+  {
+    "objectID": "routes/core.html#state-management",
+    "href": "routes/core.html#state-management",
+    "title": "core",
+    "section": "State Management",
+    "text": "State Management\nFunctions for reading and writing alignment state via the workflow state store.",
+    "crumbs": [
+      "routes",
+      "core"
+    ]
+  },
+  {
+    "objectID": "routes/core.html#conversion-helpers",
+    "href": "routes/core.html#conversion-helpers",
+    "title": "core",
+    "section": "Conversion Helpers",
+    "text": "Conversion Helpers",
+    "crumbs": [
+      "routes",
+      "core"
+    ]
+  },
+  {
+    "objectID": "routes/card_stack.html#route-handlers",
+    "href": "routes/card_stack.html#route-handlers",
+    "title": "card_stack",
+    "section": "Route Handlers",
+    "text": "Route Handlers",
+    "crumbs": [
+      "routes",
+      "card_stack"
+    ]
+  },
+  {
+    "objectID": "routes/card_stack.html#router-initialization",
+    "href": "routes/card_stack.html#router-initialization",
+    "title": "card_stack",
+    "section": "Router Initialization",
+    "text": "Router Initialization\nCreates the card stack router with navigation and viewport routes.\n\n\ninit_card_stack_router\n\ndef init_card_stack_router(\n    state_store:SQLiteWorkflowStateStore, # The workflow state store\n    workflow_id:str, # The workflow identifier\n    prefix:str, # Route prefix (e.g., \"/workflow/align/card_stack\")\n    urls:AlignmentUrls, # URL bundle (populated after routes defined)\n)-&gt;Tuple: # (router, route_dict)\n\nInitialize card stack routes for alignment.",
+    "crumbs": [
+      "routes",
+      "card_stack"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "cjm-transcript-vad-align",
+    "section": "",
+    "text": "pip install cjm_transcript_vad_align",
+    "crumbs": [
+      "cjm-transcript-vad-align"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "cjm-transcript-vad-align",
+    "section": "",
+    "text": "pip install cjm_transcript_vad_align",
+    "crumbs": [
+      "cjm-transcript-vad-align"
+    ]
+  },
+  {
+    "objectID": "index.html#project-structure",
+    "href": "index.html#project-structure",
+    "title": "cjm-transcript-vad-align",
+    "section": "Project Structure",
+    "text": "Project Structure\nnbs/\n├── components/ (7)\n│   ├── audio_controls.ipynb     # Audio playback controls for the alignment card stack: auto-navigate toggle\n│   ├── callbacks.ipynb          # Focus change callback and audio playback JavaScript for the alignment card stack\n│   ├── card_stack_config.ipynb  # Card stack configuration, HTML IDs, and button IDs for the VAD alignment card stack\n│   ├── helpers.ipynb            # State getters for the alignment step from InteractionContext\n│   ├── keyboard_config.ipynb    # Alignment-specific keyboard building blocks for assembly into a shared ZoneManager\n│   ├── step_renderer.ipynb      # Composable render functions for the alignment card stack column\n│   └── vad_card.ipynb           # VAD chunk card renderer for the alignment card stack\n├── routes/ (5)\n│   ├── audio.ipynb       # Route handlers for alignment audio playback controls\n│   ├── card_stack.ipynb  # Card stack operations for the alignment column: navigation, viewport update, width save\n│   ├── core.ipynb        # Alignment state context, getters, and updaters for route handlers\n│   ├── handlers.ipynb    # Workflow-specific alignment handlers: init\n│   └── init.ipynb        # Router assembly for Phase 2 alignment routes\n├── services/ (1)\n│   └── alignment.ipynb  # Alignment service for temporal coordination via Silero VAD plugin\n├── html_ids.ipynb  # HTML ID constants for Phase 2 Right Column: VAD Alignment\n├── models.ipynb    # Data models and URL bundles for the alignment package\n└── utils.ipynb     # Time formatting utilities for VAD alignment display\nTotal: 16 notebooks across 3 directories",
+    "crumbs": [
+      "cjm-transcript-vad-align"
+    ]
+  },
+  {
+    "objectID": "index.html#module-dependencies",
+    "href": "index.html#module-dependencies",
+    "title": "cjm-transcript-vad-align",
+    "section": "Module Dependencies",
+    "text": "Module Dependencies\ngraph LR\n    components_audio_controls[components.audio_controls&lt;br/&gt;audio_controls]\n    components_callbacks[components.callbacks&lt;br/&gt;callbacks]\n    components_card_stack_config[components.card_stack_config&lt;br/&gt;card_stack_config]\n    components_helpers[components.helpers&lt;br/&gt;helpers]\n    components_keyboard_config[components.keyboard_config&lt;br/&gt;keyboard_config]\n    components_step_renderer[components.step_renderer&lt;br/&gt;step_renderer]\n    components_vad_card[components.vad_card&lt;br/&gt;vad_card]\n    html_ids[html_ids&lt;br/&gt;html_ids]\n    models[models&lt;br/&gt;models]\n    routes_audio[routes.audio&lt;br/&gt;audio]\n    routes_card_stack[routes.card_stack&lt;br/&gt;card_stack]\n    routes_core[routes.core&lt;br/&gt;core]\n    routes_handlers[routes.handlers&lt;br/&gt;handlers]\n    routes_init[routes.init&lt;br/&gt;init]\n    services_alignment[services.alignment&lt;br/&gt;alignment]\n    utils[utils&lt;br/&gt;utils]\n\n    components_callbacks --&gt; components_audio_controls\n    components_helpers --&gt; models\n    components_step_renderer --&gt; utils\n    components_step_renderer --&gt; components_card_stack_config\n    components_step_renderer --&gt; html_ids\n    components_step_renderer --&gt; components_audio_controls\n    components_step_renderer --&gt; models\n    components_step_renderer --&gt; components_callbacks\n    components_step_renderer --&gt; components_vad_card\n    components_vad_card --&gt; utils\n    components_vad_card --&gt; html_ids\n    components_vad_card --&gt; models\n    routes_audio --&gt; routes_core\n    routes_audio --&gt; components_callbacks\n    routes_audio --&gt; models\n    routes_card_stack --&gt; routes_core\n    routes_card_stack --&gt; components_card_stack_config\n    routes_card_stack --&gt; components_step_renderer\n    routes_card_stack --&gt; models\n    routes_card_stack --&gt; components_vad_card\n    routes_card_stack --&gt; utils\n    routes_core --&gt; models\n    routes_handlers --&gt; routes_core\n    routes_handlers --&gt; services_alignment\n    routes_handlers --&gt; components_step_renderer\n    routes_handlers --&gt; html_ids\n    routes_handlers --&gt; models\n    routes_init --&gt; routes_handlers\n    routes_init --&gt; routes_card_stack\n    routes_init --&gt; services_alignment\n    routes_init --&gt; routes_audio\n    routes_init --&gt; routes_core\n    routes_init --&gt; models\n    services_alignment --&gt; models\n    utils --&gt; models\n35 cross-module dependencies detected",
+    "crumbs": [
+      "cjm-transcript-vad-align"
+    ]
+  },
+  {
+    "objectID": "index.html#cli-reference",
+    "href": "index.html#cli-reference",
+    "title": "cjm-transcript-vad-align",
+    "section": "CLI Reference",
+    "text": "CLI Reference\nNo CLI commands found in this project.",
+    "crumbs": [
+      "cjm-transcript-vad-align"
+    ]
+  },
+  {
+    "objectID": "index.html#module-overview",
+    "href": "index.html#module-overview",
+    "title": "cjm-transcript-vad-align",
+    "section": "Module Overview",
+    "text": "Module Overview\nDetailed documentation for each module in the project:\n\nalignment (alignment.ipynb)\n\nAlignment service for temporal coordination via Silero VAD plugin\n\n\nImport\nfrom cjm_transcript_vad_align.services.alignment import (\n    AlignmentService,\n    check_alignment_ready\n)\n\n\nFunctions\ndef check_alignment_ready(\n    segment_count: int,  # Number of text segments\n    chunk_count: int,  # Number of VAD chunks\n) -&gt; bool:  # True if counts match and alignment can proceed\n    \"Check if segment and VAD chunk counts match for 1:1 alignment.\"\n\n\nClasses\nclass AlignmentService:\n    def __init__(\n        self,\n        plugin_manager: PluginManager,  # Plugin manager for accessing VAD plugin\n        plugin_name: str = \"cjm-media-plugin-silero-vad\"  # Name of the VAD plugin\n    )\n    \"Service for temporal alignment via Silero VAD plugin.\"\n    \n    def __init__(\n            self,\n            plugin_manager: PluginManager,  # Plugin manager for accessing VAD plugin\n            plugin_name: str = \"cjm-media-plugin-silero-vad\"  # Name of the VAD plugin\n        )\n        \"Initialize the alignment service.\"\n    \n    def is_available(self) -&gt; bool:  # True if plugin is loaded and ready\n            \"\"\"Check if the VAD plugin is available.\"\"\"\n            return self._manager.get_plugin(self._plugin_name) is not None\n        \n        def ensure_loaded(\n            self,\n            config: Optional[Dict[str, Any]] = None  # Optional plugin configuration\n        ) -&gt; bool:  # True if successfully loaded\n        \"Check if the VAD plugin is available.\"\n    \n    def ensure_loaded(\n            self,\n            config: Optional[Dict[str, Any]] = None  # Optional plugin configuration\n        ) -&gt; bool:  # True if successfully loaded\n        \"Ensure the VAD plugin is loaded.\"\n    \n    async def analyze_audio_async(\n            self,\n            media_path: str  # Path to audio/video file\n        ) -&gt; tuple[List[VADChunk], float]:  # (VAD chunks, total duration)\n        \"Analyze audio file and return VAD chunks.\"\n    \n    def analyze_audio(\n            self,\n            media_path: str  # Path to audio/video file\n        ) -&gt; tuple[List[VADChunk], float]:  # (VAD chunks, total duration)\n        \"Analyze audio file synchronously.\"\n\n\n\naudio (audio.ipynb)\n\nRoute handlers for alignment audio playback controls\n\n\nImport\nfrom cjm_transcript_vad_align.routes.audio import (\n    init_audio_router\n)\n\n\nFunctions\ndef _generate_auto_nav_js(\n    enabled:bool  # Whether auto-navigate is enabled\n) -&gt; str:  # JavaScript to update auto-navigate flag\n    \"Generate JS to update auto-navigate flag via shared library.\"\ndef init_audio_router(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    prefix:str,  # Base prefix for audio routes\n    urls:AlignmentUrls,  # URL bundle to populate\n) -&gt; Tuple[APIRouter, Dict[str, Callable]]:  # (router, routes dict)\n    \"Initialize alignment audio control routes.\"\n\n\n\naudio_controls (audio_controls.ipynb)\n\nAudio playback controls for the alignment card stack: auto-navigate toggle\n\n\nImport\nfrom cjm_transcript_vad_align.components.audio_controls import (\n    AlignAudioControlIds,\n    render_align_auto_navigate_toggle,\n    render_align_audio_controls\n)\n\n\nFunctions\ndef _toggle_color_js(toggle_id:str) -&gt; str:  # JS snippet to sync toggle color classes\n    \"\"\"Generate JS to swap bg-error/bg-success on the toggle based on checked state.\"\"\"\n    return (\n        f\"var _t=document.getElementById('{toggle_id}');\"\n        f\"if(_t){{_t.classList.remove('{_TOGGLE_BG_OFF}','{_TOGGLE_BG_ON}');\"\n        f\"_t.classList.add(_t.checked?'{_TOGGLE_BG_ON}':'{_TOGGLE_BG_OFF}');}}\"\n    )\n\ndef render_align_auto_navigate_toggle(\n    enabled:bool=False,  # Whether auto-navigate is enabled\n) -&gt; Any:  # Auto-navigate toggle component\n    \"Generate JS to swap bg-error/bg-success on the toggle based on checked state.\"\ndef render_align_auto_navigate_toggle(\n    enabled:bool=False,  # Whether auto-navigate is enabled\n) -&gt; Any:  # Auto-navigate toggle component\n    \"Render auto-navigate toggle switch for alignment audio (client-side only).\"\ndef render_align_audio_controls(\n    current_speed:float=1.0,  # Current playback speed\n    auto_navigate:bool=False,  # Whether auto-navigate is enabled\n    speed_url:str=\"\",  # URL for speed changes (server persistence)\n    oob:bool=False,  # Whether to render as OOB swap\n) -&gt; Any:  # Combined audio controls component\n    \"Render alignment audio controls (speed selector + auto-navigate toggle).\"\n\n\nClasses\nclass AlignAudioControlIds:\n    \"HTML ID constants for alignment audio control elements.\"\n\n\nVariables\n_ALIGN_SPEED_CONFIG\n_TOGGLE_BG_OFF  # Red when auto-play disabled\n_TOGGLE_BG_ON  # Green when auto-play enabled\n\n\n\ncallbacks (callbacks.ipynb)\n\nFocus change callback and audio playback JavaScript for the alignment card stack\n\n\nImport\nfrom cjm_transcript_vad_align.components.callbacks import (\n    ALIGN_AUDIO_CONFIG,\n    generate_align_callbacks_script\n)\n\n\nFunctions\ndef _generate_toggle_auto_play_js() -&gt; str:  # JS defining window.toggleAlignAutoPlay\n    \"Generate JS for the A key auto-play toggle function.\"\ndef generate_align_callbacks_script(\n    ids:CardStackHtmlIds,  # Card stack HTML IDs\n    button_ids:CardStackButtonIds,  # Card stack button IDs\n    config:CardStackConfig,  # Card stack configuration\n    urls:CardStackUrls,  # Card stack URL bundle\n    container_id:str,  # ID of the alignment container (parent of card stack)\n    focus_input_id:str,  # ID of hidden input for focused chunk index\n    should_play_fn:str=\"\",  # Consumer-defined play guard function name (overrides default zone guard)\n) -&gt; any:  # Script element with all JavaScript callbacks\n    \"Generate JavaScript for alignment card stack with Web Audio API audition.\"\n\n\nVariables\nALIGN_AUDIO_CONFIG\n\n\n\ncard_stack (card_stack.ipynb)\n\nCard stack operations for the alignment column: navigation, viewport update, width save\n\n\nImport\nfrom cjm_transcript_vad_align.routes.card_stack import (\n    init_card_stack_router\n)\n\n\nFunctions\ndef _build_nav_response(\n    chunk_dicts:List[Dict[str, Any]],  # Serialized VAD chunks\n    state:CardStackState,  # Current card stack state\n    urls:AlignmentUrls,  # URL bundle\n) -&gt; Tuple:  # OOB response elements (slots + progress + focus)\n    \"Build OOB response for navigation changes.\"\ndef _handle_align_navigate(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    sess:Any,  # FastHTML session object\n    direction:str,  # Navigation direction: up/down/first/last/page_up/page_down\n    urls:AlignmentUrls,  # URL bundle\n) -&gt; Tuple:  # OOB response elements (slots + progress + focus + source position)\n    \"Navigate the alignment card stack.\"\ndef _handle_align_navigate_to_index(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    sess:Any,  # FastHTML session object\n    target_index:int,  # Target item index to navigate to\n    urls:AlignmentUrls,  # URL bundle\n) -&gt; Tuple:  # OOB response elements (slots + progress + focus + source position)\n    \"Navigate the alignment card stack to a specific index.\"\nasync def _handle_align_update_viewport(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    request:Any,  # FastHTML request object\n    sess:Any,  # FastHTML session object\n    visible_count:int,  # New visible card count\n    urls:AlignmentUrls,  # URL bundle\n) -&gt; Tuple:  # OOB section elements for viewport update\n    \"Update viewport with new card count via OOB section swaps.\"\ndef _handle_align_save_width(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    sess:Any,  # FastHTML session object\n    card_width:int,  # Card stack width in rem to save\n) -&gt; None:  # No response body (swap=none on client)\n    \"Save card stack width to server state with config bounds validation.\"\ndef init_card_stack_router(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    prefix:str,  # Route prefix (e.g., \"/workflow/align/card_stack\")\n    urls:AlignmentUrls,  # URL bundle (populated after routes defined)\n) -&gt; Tuple[APIRouter, Dict[str, Callable]]:  # (router, route_dict)\n    \"Initialize card stack routes for alignment.\"\n\n\n\ncard_stack_config (card_stack_config.ipynb)\n\nCard stack configuration, HTML IDs, and button IDs for the VAD alignment card stack\n\n\nImport\nfrom cjm_transcript_vad_align.components.card_stack_config import (\n    ALIGN_CS_CONFIG,\n    ALIGN_CS_IDS,\n    ALIGN_CS_BTN_IDS\n)\n\n\nVariables\nALIGN_CS_CONFIG\nALIGN_CS_IDS\nALIGN_CS_BTN_IDS\n\n\n\ncore (core.ipynb)\n\nAlignment state context, getters, and updaters for route handlers\n\n\nImport\nfrom cjm_transcript_vad_align.routes.core import (\n    WorkflowStateStore,\n    DEBUG_ALIGN_STATE,\n    AlignContext\n)\n\n\nFunctions\ndef _get_alignment_state(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    session_id:str,  # Session identifier\n) -&gt; AlignmentStepState:  # Typed alignment step state\n    \"Get the alignment step state from the workflow state store.\"\ndef _get_selection_state(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    session_id:str,  # Session identifier\n) -&gt; Dict[str, Any]:  # Selection step state dictionary\n    \"Get the selection step state (Phase 1) from the workflow state store.\"\ndef _load_alignment_context(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    session_id:str,  # Session identifier\n) -&gt; AlignContext:  # Loaded context with all common alignment state\n    \"Load commonly-needed alignment state values in a single call.\"\ndef _update_alignment_state(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    session_id:str,  # Session identifier\n    vad_chunks=None,  # Updated VAD chunks (serialized)\n    focused_chunk_index=None,  # Updated focused chunk index\n    is_initialized=None,  # Initialization flag\n    visible_count=None,  # Visible card count\n    is_auto_mode=None,  # Auto-adjust mode flag\n    card_width=None,  # Card stack width in rem\n    media_path=None,  # First audio file path (backward compat)\n    media_paths=None,  # Ordered list of all audio file paths\n    audio_duration=None,  # Audio duration\n    auto_navigate=None,  # Auto-navigate flag\n    playback_speed=None,  # Pitch-preserving playback speed\n) -&gt; None\n    \"Update the alignment step state in the workflow state store.\"\ndef _to_vad_chunks(\n    chunk_dicts:List[Dict[str, Any]]  # Serialized VAD chunk dictionaries\n) -&gt; List[VADChunk]:  # List of VADChunk objects\n    \"Convert chunk dictionaries to VADChunk objects.\"\ndef _build_card_stack_state(\n    ctx:AlignContext,  # Loaded alignment context\n    active_mode:str=None,  # Current interaction mode name (unused for alignment)\n) -&gt; CardStackState:  # Card stack state for library functions\n    \"Build a CardStackState from alignment context for library functions.\"\n\n\nClasses\nclass AlignContext(NamedTuple):\n    \"Common alignment state values loaded by handlers.\"\n\n\nVariables\nDEBUG_ALIGN_STATE = False\n\n\n\nhandlers (handlers.ipynb)\n\nWorkflow-specific alignment handlers: init\n\n\nImport\nfrom cjm_transcript_vad_align.routes.handlers import (\n    DEBUG_ALIGNMENT,\n    AlignInitResult,\n    init_workflow_router\n)\n\n\nFunctions\nasync def _handle_align_init(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    source_service:SourceService,  # Service for fetching source blocks\n    alignment_service:AlignmentService,  # Service for VAD analysis\n    request,  # FastHTML request object\n    sess,  # FastHTML session object\n    urls:AlignmentUrls,  # URL bundle\n    visible_count:int=DEFAULT_VISIBLE_COUNT,  # Initial visible card count\n    card_width:int=DEFAULT_CARD_WIDTH,  # Initial card width in rem\n    should_play_fn:str=\"\",  # Consumer-defined play guard function name\n) -&gt; AlignInitResult:  # Pure domain result for wrapper to use\n    \"\"\"\n    Initialize alignment from audio files via VAD plugin.\n    \n    Processes all selected sources' audio files, generating VAD chunks\n    for each with correct audio_file_index. Returns pure domain data.\n    \"\"\"\ndef init_workflow_router(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    source_service:SourceService,  # Service for fetching source blocks\n    alignment_service:AlignmentService,  # Service for VAD analysis\n    prefix:str,  # Route prefix (e.g., \"/workflow/align/workflow\")\n    urls:AlignmentUrls,  # URL bundle (populated after routes defined)\n    handler_init:Callable=None,  # Optional wrapped init handler\n) -&gt; Tuple[APIRouter, Dict[str, Callable]]:  # (router, route_dict)\n    \"\"\"\n    Initialize workflow routes for alignment.\n    \n    Accepts optional handler override for wrapping with cross-domain\n    coordination (e.g., shared chrome, alignment status OOB updates).\n    \"\"\"\n\n\nClasses\nclass AlignInitResult(NamedTuple):\n    \"\"\"\n    Result from pure alignment init handler.\n    \n    Contains domain-specific data for the combined layer wrapper to use\n    when building cross-domain OOB elements (shared chrome, alignment status).\n    \"\"\"\n\n\nVariables\nDEBUG_ALIGNMENT = True\n\n\n\nhelpers (helpers.ipynb)\n\nState getters for the alignment step from InteractionContext\n\n\nImport\nfrom cjm_transcript_vad_align.components.helpers import *\n\n\nFunctions\ndef _get_alignment_state(\n    ctx:InteractionContext  # Interaction context with state\n) -&gt; AlignmentStepState:  # Typed alignment step state\n    \"Get the full alignment step state from context.\"\ndef _get_vad_chunks(\n    ctx:InteractionContext  # Interaction context with state\n) -&gt; List[VADChunk]:  # List of VADChunk objects\n    \"Get the list of VAD chunks from step state as VADChunk objects.\"\ndef _is_alignment_initialized(\n    ctx:InteractionContext  # Interaction context with state\n) -&gt; bool:  # True if VAD data has been fetched\n    \"Check if alignment has been initialized.\"\ndef _get_focused_chunk_index(\n    ctx:InteractionContext,  # Interaction context with state\n    default:int=0,  # Default focused chunk index\n) -&gt; int:  # Currently focused VAD chunk index\n    \"Get the currently focused VAD chunk index.\"\ndef _get_alignment_visible_count(\n    ctx:InteractionContext,  # Interaction context with state\n    default:int=5,  # Default visible card count (compact cards)\n) -&gt; int:  # Number of visible cards in viewport\n    \"Get the stored visible card count.\"\ndef _get_alignment_is_auto_mode(\n    ctx:InteractionContext,  # Interaction context with state\n) -&gt; bool:  # Whether card count is in auto-adjust mode\n    \"Get whether the card count is in auto-adjust mode.\"\ndef _get_alignment_card_width(\n    ctx:InteractionContext,  # Interaction context with state\n    default:int=40,  # Default card width in rem (narrower for alignment)\n) -&gt; int:  # Card stack width in rem\n    \"Get the stored card stack width.\"\ndef _get_alignment_history(\n    ctx:InteractionContext  # Interaction context with state\n) -&gt; list:  # Undo history stack\n    \"Get the undo history stack.\"\ndef _get_media_path(\n    ctx:InteractionContext  # Interaction context with state\n) -&gt; Optional[str]:  # Path to original audio file or None\n    \"Get the original audio file path.\"\ndef _get_audio_duration(\n    ctx:InteractionContext  # Interaction context with state\n) -&gt; Optional[float]:  # Audio duration in seconds or None\n    \"Get the total audio duration.\"\n\n\n\nhtml_ids (html_ids.ipynb)\n\nHTML ID constants for Phase 2 Right Column: VAD Alignment\n\n\nImport\nfrom cjm_transcript_vad_align.html_ids import (\n    AlignmentHtmlIds\n)\n\n\nClasses\nclass AlignmentHtmlIds:\n    \"HTML ID constants for Phase 2 Right Column: VAD Alignment.\"\n    \n    def as_selector(\n            id_str:str  # The HTML ID to convert\n        ) -&gt; str:  # CSS selector with # prefix\n        \"Convert an ID to a CSS selector format.\"\n    \n    def vad_chunk(\n            index:int  # VAD chunk index\n        ) -&gt; str:  # HTML ID for the VAD chunk element\n        \"Generate HTML ID for a VAD chunk element.\"\n\n\n\ninit (init.ipynb)\n\nRouter assembly for Phase 2 alignment routes\n\n\nImport\nfrom cjm_transcript_vad_align.routes.init import (\n    init_alignment_routers\n)\n\n\nFunctions\ndef init_alignment_routers(\n    state_store:WorkflowStateStore,  # The workflow state store\n    workflow_id:str,  # The workflow identifier\n    source_service:SourceService,  # Service for fetching source blocks\n    alignment_service:AlignmentService,  # Service for VAD analysis\n    prefix:str,  # Base prefix for alignment routes (e.g., \"/workflow/align\")\n    audio_src_url:str,  # URL for audio_src route (from core router)\n    wrapped_init:Callable=None,  # Optional wrapped init handler\n) -&gt; Tuple[List[APIRouter], AlignmentUrls, Dict[str, Callable]]:  # (routers, urls, merged_routes)\n    \"Initialize and return all alignment routers with URL bundle.\"\n\n\n\nkeyboard_config (keyboard_config.ipynb)\n\nAlignment-specific keyboard building blocks for assembly into a shared ZoneManager\n\n\nImport\nfrom cjm_transcript_vad_align.components.keyboard_config import (\n    create_align_kb_parts\n)\n\n\nFunctions\ndef create_align_kb_parts(\n    ids:CardStackHtmlIds,  # Card stack HTML IDs\n    button_ids:CardStackButtonIds,  # Card stack button IDs for navigation\n    config:CardStackConfig,  # Card stack configuration\n) -&gt; Tuple[FocusZone, tuple, tuple]:  # (zone, actions, modes)\n    \"Create alignment-specific keyboard building blocks.\"\n\n\n\nmodels (models.ipynb)\n\nData models and URL bundles for the alignment package\n\n\nImport\nfrom cjm_transcript_vad_align.models import (\n    AlignmentStepState,\n    VADChunk,\n    AlignmentUrls\n)\n\n\nClasses\nclass AlignmentStepState(TypedDict):\n    \"State for Phase 2 (right column): Temporal Alignment.\"\n@dataclass\nclass VADChunk:\n    \"A voice activity detection time range.\"\n    \n    index: int  # Chunk index in sequence (global across all audio files)\n    start_time: float  # Start time in seconds (relative to its audio file)\n    end_time: float  # End time in seconds (relative to its audio file)\n    audio_file_index: int = 0  # Which audio file this chunk belongs to\n    \n    def duration(self) -&gt; float:  # Duration in seconds\n            \"\"\"Calculate chunk duration.\"\"\"\n            return self.end_time - self.start_time\n        \n        def to_dict(self) -&gt; Dict[str, Any]:  # Dictionary representation\n        \"Calculate chunk duration.\"\n    \n    def to_dict(self) -&gt; Dict[str, Any]:  # Dictionary representation\n            \"\"\"Convert to dictionary for JSON serialization.\"\"\"\n            return asdict(self)\n        \n        @classmethod\n        def from_dict(\n            cls,\n            data: Dict[str, Any]  # Dictionary representation\n        ) -&gt; \"VADChunk\":  # Reconstructed VADChunk\n        \"Convert to dictionary for JSON serialization.\"\n    \n    def from_dict(\n            cls,\n            data: Dict[str, Any]  # Dictionary representation\n        ) -&gt; \"VADChunk\":  # Reconstructed VADChunk\n        \"Create from dictionary.\"\n@dataclass\nclass AlignmentUrls:\n    \"URL bundle for Phase 2 alignment route handlers and renderers.\"\n    \n    card_stack: CardStackUrls = field(...)\n    init: str = ''  # Initialize alignment (fetch VAD data)\n    audio_src: str = ''  # Audio file serving URL base\n    toggle_auto_nav: str = ''  # Toggle auto-navigate on/off\n    speed_change: str = ''  # Persist playback speed changes\n\n\n\nstep_renderer (step_renderer.ipynb)\n\nComposable render functions for the alignment card stack column\n\n\nImport\nfrom cjm_transcript_vad_align.components.step_renderer import (\n    DEBUG_ALIGN_RENDER,\n    render_align_toolbar,\n    render_align_stats,\n    render_align_source_position,\n    render_align_column_body,\n    render_align_footer_content,\n    render_align_mini_stats_text\n)\n\n\nFunctions\ndef render_align_toolbar(\n    current_speed:float=1.0,  # Current playback speed\n    auto_navigate:bool=False,  # Whether auto-navigate is enabled\n    speed_url:str=\"\",  # URL for speed-change POST (server persistence)\n    oob:bool=False,  # Whether to render as OOB swap\n) -&gt; Any:  # Toolbar component\n    \"Render the alignment toolbar (speed selector + auto-play toggle).\"\ndef render_align_stats(\n    chunks:List[VADChunk],  # Current VAD chunks\n    oob:bool=False,  # Whether to render as OOB swap\n) -&gt; Any:  # Statistics component\n    \"Render alignment statistics.\"\ndef render_align_source_position(\n    chunks:List[VADChunk],  # Current VAD chunks\n    focused_index:int=0,  # Currently focused chunk index\n    oob:bool=False,  # Whether to render as OOB swap\n) -&gt; Any:  # Audio file position indicator (empty if single file)\n    \"Render audio file position indicator for the focused chunk.\"\ndef render_align_column_body(\n    chunks:List[VADChunk],  # VAD chunks to display\n    focused_index:int,  # Currently focused chunk index\n    visible_count:int,  # Number of visible cards in viewport\n    card_width:int,  # Card stack width in rem\n    urls:AlignmentUrls,  # URL bundle for alignment routes\n    kb_system:Any=None,  # Rendered keyboard system (None when KB managed externally)\n    audio_urls:Optional[List[str]]=None,  # Audio file URLs for Web Audio API\n    should_play_fn:str=\"\",  # Consumer-defined play guard function name (overrides default zone guard)\n) -&gt; Any:  # Div with id=COLUMN_CONTENT\n    \"Render the alignment column content area with card stack viewport.\"\ndef render_align_footer_content(\n    chunks:List[VADChunk],  # Current VAD chunks\n    focused_index:int,  # Currently focused chunk index\n) -&gt; Any:  # Footer content with progress indicator, source position, and stats\n    \"Render footer content with progress indicator, source position, and alignment statistics.\"\ndef render_align_mini_stats_text(\n    chunks:List[VADChunk],  # Current VAD chunks\n) -&gt; str:  # Compact stats string for column header badge\n    \"Generate compact stats string for the alignment column header badge.\"\n\n\nVariables\nDEBUG_ALIGN_RENDER = False\n\n\n\nutils (utils.ipynb)\n\nTime formatting utilities for VAD alignment display\n\n\nImport\nfrom cjm_transcript_vad_align.utils import (\n    format_time_precise,\n    get_audio_file_boundaries,\n    get_audio_file_count,\n    get_audio_file_position\n)\n\n\nFunctions\ndef format_time_precise(\n    seconds: Optional[float]  # Time in seconds\n) -&gt; str:  # Formatted time string (m:ss.s)\n    \"Format seconds as m:ss.s for sub-second display.\"\ndef get_audio_file_boundaries(\n    chunks: List[\"VADChunk\"],  # Ordered list of VAD chunks\n) -&gt; Set[int]:  # Indices where audio_file_index changes from the previous chunk\n    \"\"\"\n    Find indices where audio_file_index changes between adjacent chunks.\n    \n    A boundary at index N means chunk[N].audio_file_index differs from\n    chunk[N-1].audio_file_index.\n    \"\"\"\ndef get_audio_file_count(\n    chunks: List[\"VADChunk\"],  # Ordered list of VAD chunks\n) -&gt; int:  # Number of unique audio files\n    \"Count the number of unique audio files in the chunk list.\"\ndef get_audio_file_position(\n    chunks: List[\"VADChunk\"],  # Ordered list of VAD chunks\n    focused_index: int,  # Index of the focused chunk\n) -&gt; Optional[int]:  # 1-based position of the audio file, or None\n    \"\"\"\n    Get the audio file position (1-based) of the focused chunk.\n    \n    Returns which audio file the focused chunk belongs to,\n    based on order of first appearance.\n    \"\"\"\n\n\n\nvad_card (vad_card.ipynb)\n\nVAD chunk card renderer for the alignment card stack\n\n\nImport\nfrom cjm_transcript_vad_align.components.vad_card import (\n    render_vad_card,\n    create_vad_card_renderer\n)\n\n\nFunctions\ndef render_vad_card(\n    chunk:VADChunk,  # VAD chunk to render\n    card_role:CardRole,  # Role of this card in viewport (\"focused\" or \"context\")\n    has_boundary_above:bool=False,  # Audio file boundary exists above this card\n    has_boundary_below:bool=False,  # Audio file boundary exists below this card\n) -&gt; Any:  # VAD chunk card component\n    \"Render a single VAD chunk card with time range, duration, playing indicator, and play button.\"\ndef create_vad_card_renderer(\n    audio_file_boundaries:Set[int]=None,  # Indices where audio_file_index changes\n) -&gt; Callable:  # Card renderer callback: (item, CardRenderContext) -&gt; FT\n    \"Create a card renderer callback for VAD chunk cards.\"",
+    "crumbs": [
+      "cjm-transcript-vad-align"
+    ]
+  },
+  {
+    "objectID": "html_ids.html",
+    "href": "html_ids.html",
+    "title": "html_ids",
+    "section": "",
+    "text": "AlignmentHtmlIds\n\ndef AlignmentHtmlIds(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nHTML ID constants for Phase 2 Right Column: VAD Alignment.",
+    "crumbs": [
+      "html_ids"
+    ]
+  },
+  {
+    "objectID": "components/callbacks.html",
+    "href": "components/callbacks.html",
+    "title": "callbacks",
+    "section": "",
+    "text": "Web Audio API manager configuration for the alignment instance.",
+    "crumbs": [
+      "components",
+      "callbacks"
+    ]
+  },
+  {
+    "objectID": "components/callbacks.html#audio-config",
+    "href": "components/callbacks.html#audio-config",
+    "title": "callbacks",
+    "section": "",
+    "text": "Web Audio API manager configuration for the alignment instance.",
+    "crumbs": [
+      "components",
+      "callbacks"
+    ]
+  },
+  {
+    "objectID": "components/callbacks.html#auto-play-toggle-js",
+    "href": "components/callbacks.html#auto-play-toggle-js",
+    "title": "callbacks",
+    "section": "Auto-Play Toggle JS",
+    "text": "Auto-Play Toggle JS\nNamed function for the A key KeyAction — toggles auto-navigate state, syncs the checkbox, and swaps bg-error/bg-success color classes.",
+    "crumbs": [
+      "components",
+      "callbacks"
+    ]
+  },
+  {
+    "objectID": "components/callbacks.html#combined-callbacks-script",
+    "href": "components/callbacks.html#combined-callbacks-script",
+    "title": "callbacks",
+    "section": "Combined Callbacks Script",
+    "text": "Combined Callbacks Script\nWraps the card stack library’s JS generator with Web Audio API focus change callback from cjm-fasthtml-web-audio.\n\n\ngenerate_align_callbacks_script\n\ndef generate_align_callbacks_script(\n    ids:CardStackHtmlIds, # Card stack HTML IDs\n    button_ids:CardStackButtonIds, # Card stack button IDs\n    config:CardStackConfig, # Card stack configuration\n    urls:CardStackUrls, # Card stack URL bundle\n    container_id:str, # ID of the alignment container (parent of card stack)\n    focus_input_id:str, # ID of hidden input for focused chunk index\n    should_play_fn:str='', # Consumer-defined play guard function name (overrides default zone guard)\n)-&gt;any: # Script element with all JavaScript callbacks\n\nGenerate JavaScript for alignment card stack with Web Audio API audition.",
+    "crumbs": [
+      "components",
+      "callbacks"
+    ]
+  },
+  {
+    "objectID": "components/vad_card.html",
+    "href": "components/vad_card.html",
+    "title": "vad_card",
+    "section": "",
+    "text": "Each VAD chunk card is a compact row showing time range and duration. Much simpler than segment cards — no split mode, no token selector.\n\n\n\n\ndef render_vad_card(\n    chunk:VADChunk, # VAD chunk to render\n    card_role:Literal, # Role of this card in viewport (\"focused\" or \"context\")\n    has_boundary_above:bool=False, # Audio file boundary exists above this card\n    has_boundary_below:bool=False, # Audio file boundary exists below this card\n)-&gt;Any: # VAD chunk card component\n\nRender a single VAD chunk card with time range, duration, playing indicator, and play button.",
+    "crumbs": [
+      "components",
+      "vad_card"
+    ]
+  },
+  {
+    "objectID": "components/vad_card.html#card-renderer",
+    "href": "components/vad_card.html#card-renderer",
+    "title": "vad_card",
+    "section": "",
+    "text": "Each VAD chunk card is a compact row showing time range and duration. Much simpler than segment cards — no split mode, no token selector.\n\n\n\n\ndef render_vad_card(\n    chunk:VADChunk, # VAD chunk to render\n    card_role:Literal, # Role of this card in viewport (\"focused\" or \"context\")\n    has_boundary_above:bool=False, # Audio file boundary exists above this card\n    has_boundary_below:bool=False, # Audio file boundary exists below this card\n)-&gt;Any: # VAD chunk card component\n\nRender a single VAD chunk card with time range, duration, playing indicator, and play button.",
+    "crumbs": [
+      "components",
+      "vad_card"
+    ]
+  },
+  {
+    "objectID": "components/vad_card.html#card-renderer-factory",
+    "href": "components/vad_card.html#card-renderer-factory",
+    "title": "vad_card",
+    "section": "Card Renderer Factory",
+    "text": "Card Renderer Factory\nCreates a callback compatible with the card stack library’s render_card parameter.\n\n\ncreate_vad_card_renderer\n\ndef create_vad_card_renderer(\n    audio_file_boundaries:Set=None, # Indices where audio_file_index changes\n)-&gt;Callable: # Card renderer callback: (item, CardRenderContext) -&gt; FT\n\nCreate a card renderer callback for VAD chunk cards.",
+    "crumbs": [
+      "components",
+      "vad_card"
+    ]
+  },
+  {
+    "objectID": "components/keyboard_config.html",
+    "href": "components/keyboard_config.html",
+    "title": "keyboard_config",
+    "section": "",
+    "text": "Returns (zone, actions, modes) tuple for assembly into a shared ZoneManager by the combined-level keyboard config. No sub-modes needed (unlike decomp’s split mode).\n\n\n\n\ndef create_align_kb_parts(\n    ids:CardStackHtmlIds, # Card stack HTML IDs\n    button_ids:CardStackButtonIds, # Card stack button IDs for navigation\n    config:CardStackConfig, # Card stack configuration\n)-&gt;Tuple: # (zone, actions, modes)\n\nCreate alignment-specific keyboard building blocks.\n\n# Speed cycle KeyActions wire correctly into the alignment zone\nfrom cjm_fasthtml_card_stack.core.html_ids import CardStackHtmlIds as _IDs\nfrom cjm_fasthtml_card_stack.core.button_ids import CardStackButtonIds as _BtnIds\nfrom cjm_fasthtml_card_stack.core.config import CardStackConfig as _Cfg\n\n_zone, _actions, _modes = create_align_kb_parts(\n    ids=_IDs(prefix=\"align-cs\"),\n    button_ids=_BtnIds(prefix=\"align-cs\"),\n    config=_Cfg(),\n)\n\n_by_key = {(a.key, frozenset(a.modifiers)): a for a in _actions}\n\n_up = _by_key.get((\"ArrowUp\", frozenset({\"shift\"})))\n_dn = _by_key.get((\"ArrowDown\", frozenset({\"shift\"})))\nassert _up is not None, \"Shift+ArrowUp binding missing\"\nassert _dn is not None, \"Shift+ArrowDown binding missing\"\n\n# Scoped to the alignment card-stack zone, wired to web-audio's cycle helpers,\n# grouped with the other audio bindings in the hint panel\nassert _up.js_callback == \"cycleAlignSpeedUp\"\nassert _dn.js_callback == \"cycleAlignSpeedDown\"\nassert _up.zone_ids == (_zone.id,)\nassert _dn.zone_ids == (_zone.id,)\nassert _up.hint_group == \"Audio\"\nassert _dn.hint_group == \"Audio\"\n\n# Plain ArrowUp/ArrowDown (card-stack nav) must NOT collide — distinct modifiers frozenset\n_nav_up = _by_key.get((\"ArrowUp\", frozenset()))\n_nav_dn = _by_key.get((\"ArrowDown\", frozenset()))\nassert _nav_up is not None and _nav_up.htmx_trigger, \"Plain ArrowUp should still be the card-stack nav binding\"\nassert _nav_dn is not None and _nav_dn.htmx_trigger, \"Plain ArrowDown should still be the card-stack nav binding\"\n\nprint(\"Shift+Arrow speed cycle bindings test passed\")\n\nShift+Arrow speed cycle bindings test passed",
+    "crumbs": [
+      "components",
+      "keyboard_config"
+    ]
+  },
+  {
+    "objectID": "components/keyboard_config.html#keyboard-parts-builder",
+    "href": "components/keyboard_config.html#keyboard-parts-builder",
+    "title": "keyboard_config",
+    "section": "",
+    "text": "Returns (zone, actions, modes) tuple for assembly into a shared ZoneManager by the combined-level keyboard config. No sub-modes needed (unlike decomp’s split mode).\n\n\n\n\ndef create_align_kb_parts(\n    ids:CardStackHtmlIds, # Card stack HTML IDs\n    button_ids:CardStackButtonIds, # Card stack button IDs for navigation\n    config:CardStackConfig, # Card stack configuration\n)-&gt;Tuple: # (zone, actions, modes)\n\nCreate alignment-specific keyboard building blocks.\n\n# Speed cycle KeyActions wire correctly into the alignment zone\nfrom cjm_fasthtml_card_stack.core.html_ids import CardStackHtmlIds as _IDs\nfrom cjm_fasthtml_card_stack.core.button_ids import CardStackButtonIds as _BtnIds\nfrom cjm_fasthtml_card_stack.core.config import CardStackConfig as _Cfg\n\n_zone, _actions, _modes = create_align_kb_parts(\n    ids=_IDs(prefix=\"align-cs\"),\n    button_ids=_BtnIds(prefix=\"align-cs\"),\n    config=_Cfg(),\n)\n\n_by_key = {(a.key, frozenset(a.modifiers)): a for a in _actions}\n\n_up = _by_key.get((\"ArrowUp\", frozenset({\"shift\"})))\n_dn = _by_key.get((\"ArrowDown\", frozenset({\"shift\"})))\nassert _up is not None, \"Shift+ArrowUp binding missing\"\nassert _dn is not None, \"Shift+ArrowDown binding missing\"\n\n# Scoped to the alignment card-stack zone, wired to web-audio's cycle helpers,\n# grouped with the other audio bindings in the hint panel\nassert _up.js_callback == \"cycleAlignSpeedUp\"\nassert _dn.js_callback == \"cycleAlignSpeedDown\"\nassert _up.zone_ids == (_zone.id,)\nassert _dn.zone_ids == (_zone.id,)\nassert _up.hint_group == \"Audio\"\nassert _dn.hint_group == \"Audio\"\n\n# Plain ArrowUp/ArrowDown (card-stack nav) must NOT collide — distinct modifiers frozenset\n_nav_up = _by_key.get((\"ArrowUp\", frozenset()))\n_nav_dn = _by_key.get((\"ArrowDown\", frozenset()))\nassert _nav_up is not None and _nav_up.htmx_trigger, \"Plain ArrowUp should still be the card-stack nav binding\"\nassert _nav_dn is not None and _nav_dn.htmx_trigger, \"Plain ArrowDown should still be the card-stack nav binding\"\n\nprint(\"Shift+Arrow speed cycle bindings test passed\")\n\nShift+Arrow speed cycle bindings test passed",
+    "crumbs": [
+      "components",
+      "keyboard_config"
+    ]
+  },
+  {
+    "objectID": "utils.html",
+    "href": "utils.html",
+    "title": "utils",
+    "section": "",
+    "text": "def format_time_precise(\n    seconds:Optional, # Time in seconds\n)-&gt;str: # Formatted time string (m:ss.s)\n\nFormat seconds as m:ss.s for sub-second display.",
+    "crumbs": [
+      "utils"
+    ]
+  },
+  {
+    "objectID": "utils.html#time-formatting",
+    "href": "utils.html#time-formatting",
+    "title": "utils",
+    "section": "",
+    "text": "def format_time_precise(\n    seconds:Optional, # Time in seconds\n)-&gt;str: # Formatted time string (m:ss.s)\n\nFormat seconds as m:ss.s for sub-second display.",
+    "crumbs": [
+      "utils"
+    ]
+  },
+  {
+    "objectID": "utils.html#tests",
+    "href": "utils.html#tests",
+    "title": "utils",
+    "section": "Tests",
+    "text": "Tests",
+    "crumbs": [
+      "utils"
+    ]
+  },
+  {
+    "objectID": "utils.html#audio-file-boundaries",
+    "href": "utils.html#audio-file-boundaries",
+    "title": "utils",
+    "section": "Audio File Boundaries",
+    "text": "Audio File Boundaries\n\n\nget_audio_file_boundaries\n\ndef get_audio_file_boundaries(\n    chunks:List, # Ordered list of VAD chunks\n)-&gt;Set: # Indices where audio_file_index changes from the previous chunk\n\nFind indices where audio_file_index changes between adjacent chunks.\nA boundary at index N means chunk[N].audio_file_index differs from chunk[N-1].audio_file_index.\n\n\n\nget_audio_file_count\n\ndef get_audio_file_count(\n    chunks:List, # Ordered list of VAD chunks\n)-&gt;int: # Number of unique audio files\n\nCount the number of unique audio files in the chunk list.\n\n\n\nget_audio_file_position\n\ndef get_audio_file_position(\n    chunks:List, # Ordered list of VAD chunks\n    focused_index:int, # Index of the focused chunk\n)-&gt;Optional: # 1-based position of the audio file, or None\n\nGet the audio file position (1-based) of the focused chunk.\nReturns which audio file the focused chunk belongs to, based on order of first appearance.\n\nassert format_time_precise(6.6) == \"0:06.6\"\nassert format_time_precise(9.8) == \"0:09.8\"\nassert format_time_precise(65.25) == \"1:05.2\"\nassert format_time_precise(0.0) == \"0:00.0\"\nassert format_time_precise(None) == \"-:--.-\"\nprint(\"format_time_precise tests passed\")\n\n\nfrom cjm_transcript_vad_align.models import VADChunk\n\n# Test get_audio_file_boundaries\nchunks_single = [\n    VADChunk(index=0, start_time=0.0, end_time=1.0, audio_file_index=0),\n    VADChunk(index=1, start_time=1.0, end_time=2.0, audio_file_index=0),\n]\nassert get_audio_file_boundaries(chunks_single) == set()\n\nchunks_multi = [\n    VADChunk(index=0, start_time=0.0, end_time=1.0, audio_file_index=0),\n    VADChunk(index=1, start_time=1.0, end_time=2.0, audio_file_index=0),\n    VADChunk(index=2, start_time=0.0, end_time=1.5, audio_file_index=1),\n    VADChunk(index=3, start_time=1.5, end_time=3.0, audio_file_index=1),\n    VADChunk(index=4, start_time=0.0, end_time=2.0, audio_file_index=2),\n]\nassert get_audio_file_boundaries(chunks_multi) == {2, 4}\nassert get_audio_file_boundaries([]) == set()\nprint(\"get_audio_file_boundaries tests passed\")\n\n# Test get_audio_file_count\nassert get_audio_file_count(chunks_single) == 1\nassert get_audio_file_count(chunks_multi) == 3\nassert get_audio_file_count([]) == 0\nprint(\"get_audio_file_count tests passed\")\n\n# Test get_audio_file_position\nassert get_audio_file_position(chunks_multi, 0) == 1\nassert get_audio_file_position(chunks_multi, 1) == 1\nassert get_audio_file_position(chunks_multi, 2) == 2\nassert get_audio_file_position(chunks_multi, 4) == 3\nassert get_audio_file_position(chunks_multi, 99) is None\nassert get_audio_file_position([], 0) is None\nprint(\"get_audio_file_position tests passed\")\n\nget_audio_file_boundaries tests passed\nget_audio_file_count tests passed\nget_audio_file_position tests passed",
+    "crumbs": [
+      "utils"
+    ]
+  },
+  {
+    "objectID": "components/audio_controls.html",
+    "href": "components/audio_controls.html",
+    "title": "audio_controls",
+    "section": "",
+    "text": "HTML ID constants for alignment audio control elements.\n\n\n\n\ndef AlignAudioControlIds(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nHTML ID constants for alignment audio control elements.",
+    "crumbs": [
+      "components",
+      "audio_controls"
+    ]
+  },
+  {
+    "objectID": "components/audio_controls.html#html-ids",
+    "href": "components/audio_controls.html#html-ids",
+    "title": "audio_controls",
+    "section": "",
+    "text": "HTML ID constants for alignment audio control elements.\n\n\n\n\ndef AlignAudioControlIds(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nHTML ID constants for alignment audio control elements.",
+    "crumbs": [
+      "components",
+      "audio_controls"
+    ]
+  },
+  {
+    "objectID": "components/audio_controls.html#speed-selector-config",
+    "href": "components/audio_controls.html#speed-selector-config",
+    "title": "audio_controls",
+    "section": "Speed Selector Config",
+    "text": "Speed Selector Config\nThe speed selector itself is provided by cjm_fasthtml_web_audio.components.render_speed_selector. We only need a minimal WebAudioConfig here (namespace + enable_speed=True) to drive its namespace-derived IDs and window.setAlignSpeed / window.cycleAlignSpeed* wiring.\nDefined locally (rather than reusing ALIGN_AUDIO_CONFIG from components.callbacks) to avoid a circular import — callbacks imports symbols from this module.",
+    "crumbs": [
+      "components",
+      "audio_controls"
+    ]
+  },
+  {
+    "objectID": "components/audio_controls.html#auto-navigate-toggle",
+    "href": "components/audio_controls.html#auto-navigate-toggle",
+    "title": "audio_controls",
+    "section": "Auto-Navigate Toggle",
+    "text": "Auto-Navigate Toggle\nToggle switch to enable automatic navigation to the next VAD chunk when audio playback of the current chunk completes.\n\n\nrender_align_auto_navigate_toggle\n\ndef render_align_auto_navigate_toggle(\n    enabled:bool=False, # Whether auto-navigate is enabled\n)-&gt;Any: # Auto-navigate toggle component\n\nRender auto-navigate toggle switch for alignment audio (client-side only).",
+    "crumbs": [
+      "components",
+      "audio_controls"
+    ]
+  },
+  {
+    "objectID": "components/audio_controls.html#audio-controls-container",
+    "href": "components/audio_controls.html#audio-controls-container",
+    "title": "audio_controls",
+    "section": "Audio Controls Container",
+    "text": "Audio Controls Container\nWraps the toggle in an OOB-targetable container for chrome switching.\n\n\nrender_align_audio_controls\n\ndef render_align_audio_controls(\n    current_speed:float=1.0, # Current playback speed\n    auto_navigate:bool=False, # Whether auto-navigate is enabled\n    speed_url:str='', # URL for speed changes (server persistence)\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Combined audio controls component\n\nRender alignment audio controls (speed selector + auto-navigate toggle).",
+    "crumbs": [
+      "components",
+      "audio_controls"
+    ]
+  },
+  {
+    "objectID": "components/audio_controls.html#tests",
+    "href": "components/audio_controls.html#tests",
+    "title": "audio_controls",
+    "section": "Tests",
+    "text": "Tests\n\nfrom fasthtml.common import to_xml\nimport re\n\ndef _get_toggle_classes(html):\n    \"\"\"Extract class attribute from the toggle input element.\"\"\"\n    m = re.search(r'id=\"sd-align-auto-nav-toggle\"[^&gt;]*class=\"([^\"]*)\"', html)\n    return m.group(1) if m else \"\"\n\n# Test enabled toggle — green background, checked\nhtml = to_xml(render_align_auto_navigate_toggle(enabled=True))\nassert ' checked' in html\nassert 'sd-align-auto-nav-toggle' in html\nassert 'setAlignAutoNavigate' in html\nassert 'hx-post' not in html  # No server persistence\ntoggle_cls = _get_toggle_classes(html)\nassert 'bg-success' in toggle_cls\nassert 'bg-error' not in toggle_cls\n\n# Test disabled state — red background, no checked\nhtml_off = to_xml(render_align_auto_navigate_toggle(enabled=False))\nassert ' checked' not in html_off\ntoggle_cls_off = _get_toggle_classes(html_off)\nassert 'bg-error' in toggle_cls_off\nassert 'bg-success' not in toggle_cls_off\n\n# Test color JS is in onchange (classList swap logic)\nassert 'classList.remove' in html\nassert 'classList.add' in html\n\n# Container delegates speed selector to cjm-fasthtml-web-audio's render_speed_selector.\n# Verify the container wires the library correctly at the integration boundary:\n# namespace-derived IDs/functions present, persisted speed flows through, OOB attr applied.\n\n# Default speed + no change_url: select rendered, no HTMX persistence, no sync script\nhtml_default = to_xml(render_align_audio_controls(current_speed=1.0, auto_navigate=False))\nassert 'sd-align-speed-select' in html_default  # Library-derived ID\nassert 'setAlignSpeed' in html_default           # Library-derived onchange JS\nassert 'sd-align-auto-nav-toggle' in html_default\nassert 'sd-align-audio-controls' in html_default\nassert 'hx-post' not in html_default             # speed_url empty → no HTMX\nassert 'setAlignSpeed(1.0)' not in html_default  # speed==1.0 → sync script is no-op\n\n# Non-default speed + change_url: HTMX persistence wired, sync script fires, selected option matches\nhtml_wired = to_xml(render_align_audio_controls(current_speed=2.0, auto_navigate=True, speed_url=\"/x/speed\"))\nassert 'hx-post=\"/x/speed\"' in html_wired\nassert 'hx-trigger=\"change\"' in html_wired\nassert 'setAlignSpeed(2.0)' in html_wired  # Initial sync script\nassert re.search(r'&lt;option[^&gt;]*value=\"2.0\"[^&gt;]*selected', html_wired)\n\n# OOB wrapper\nhtml_oob = to_xml(render_align_audio_controls(auto_navigate=True, oob=True))\nassert 'hx-swap-oob' in html_oob\nassert 'sd-align-audio-controls' in html_oob\n\nprint('Alignment audio controls tests passed')\n\nAlignment audio controls tests passed",
+    "crumbs": [
+      "components",
+      "audio_controls"
+    ]
+  },
+  {
+    "objectID": "components/card_stack_config.html",
+    "href": "components/card_stack_config.html",
+    "title": "card_stack_config",
+    "section": "",
+    "text": "The alignment card stack uses a unique sd-align prefix to avoid ID collisions with the decomposition card stack (sd-decomp). Cards are more compact (time ranges vs. text content), so defaults use narrower width range and tighter spacing.",
+    "crumbs": [
+      "components",
+      "card_stack_config"
+    ]
+  },
+  {
+    "objectID": "components/card_stack_config.html#configuration",
+    "href": "components/card_stack_config.html#configuration",
+    "title": "card_stack_config",
+    "section": "",
+    "text": "The alignment card stack uses a unique sd-align prefix to avoid ID collisions with the decomposition card stack (sd-decomp). Cards are more compact (time ranges vs. text content), so defaults use narrower width range and tighter spacing.",
+    "crumbs": [
+      "components",
+      "card_stack_config"
+    ]
+  },
+  {
+    "objectID": "components/step_renderer.html",
+    "href": "components/step_renderer.html",
+    "title": "step_renderer",
+    "section": "",
+    "text": "Alignment-specific toolbar with card count selector. Rendered into the shared chrome area when the alignment column is active.\n\n\n\n\ndef render_align_toolbar(\n    current_speed:float=1.0, # Current playback speed\n    auto_navigate:bool=False, # Whether auto-navigate is enabled\n    speed_url:str='', # URL for speed-change POST (server persistence)\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Toolbar component\n\nRender the alignment toolbar (speed selector + auto-play toggle).\n\n\n\n\n\ndef render_align_source_position(\n    chunks:List, # Current VAD chunks\n    focused_index:int=0, # Currently focused chunk index\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Audio file position indicator (empty if single file)\n\nRender audio file position indicator for the focused chunk.\n\n\n\n\n\ndef render_align_stats(\n    chunks:List, # Current VAD chunks\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Statistics component\n\nRender alignment statistics.",
+    "crumbs": [
+      "components",
+      "step_renderer"
+    ]
+  },
+  {
+    "objectID": "components/step_renderer.html#toolbar-stats",
+    "href": "components/step_renderer.html#toolbar-stats",
+    "title": "step_renderer",
+    "section": "",
+    "text": "Alignment-specific toolbar with card count selector. Rendered into the shared chrome area when the alignment column is active.\n\n\n\n\ndef render_align_toolbar(\n    current_speed:float=1.0, # Current playback speed\n    auto_navigate:bool=False, # Whether auto-navigate is enabled\n    speed_url:str='', # URL for speed-change POST (server persistence)\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Toolbar component\n\nRender the alignment toolbar (speed selector + auto-play toggle).\n\n\n\n\n\ndef render_align_source_position(\n    chunks:List, # Current VAD chunks\n    focused_index:int=0, # Currently focused chunk index\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Audio file position indicator (empty if single file)\n\nRender audio file position indicator for the focused chunk.\n\n\n\n\n\ndef render_align_stats(\n    chunks:List, # Current VAD chunks\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Statistics component\n\nRender alignment statistics.",
+    "crumbs": [
+      "components",
+      "step_renderer"
+    ]
+  },
+  {
+    "objectID": "components/step_renderer.html#column-body",
+    "href": "components/step_renderer.html#column-body",
+    "title": "step_renderer",
+    "section": "Column Body",
+    "text": "Column Body\nRenders the alignment column content area: card stack viewport, hidden audio element, keyboard infrastructure, and JavaScript callbacks.\n\n\nrender_align_column_body\n\ndef render_align_column_body(\n    chunks:List, # VAD chunks to display\n    focused_index:int, # Currently focused chunk index\n    visible_count:int, # Number of visible cards in viewport\n    card_width:int, # Card stack width in rem\n    urls:AlignmentUrls, # URL bundle for alignment routes\n    kb_system:Any=None, # Rendered keyboard system (None when KB managed externally)\n    audio_urls:Optional=None, # Audio file URLs for Web Audio API\n    should_play_fn:str='', # Consumer-defined play guard function name (overrides default zone guard)\n)-&gt;Any: # Div with id=COLUMN_CONTENT\n\nRender the alignment column content area with card stack viewport.",
+    "crumbs": [
+      "components",
+      "step_renderer"
+    ]
+  },
+  {
+    "objectID": "components/step_renderer.html#footer-mini-stats",
+    "href": "components/step_renderer.html#footer-mini-stats",
+    "title": "step_renderer",
+    "section": "Footer & Mini-Stats",
+    "text": "Footer & Mini-Stats\nRender footer content (progress + stats) for the shared chrome area, and compact mini-stats text for the column header badge.\n\n\nrender_align_footer_content\n\ndef render_align_footer_content(\n    chunks:List, # Current VAD chunks\n    focused_index:int, # Currently focused chunk index\n)-&gt;Any: # Footer content with progress indicator, source position, and stats\n\nRender footer content with progress indicator, source position, and alignment statistics.\n\n\n\nrender_align_mini_stats_text\n\ndef render_align_mini_stats_text(\n    chunks:List, # Current VAD chunks\n)-&gt;str: # Compact stats string for column header badge\n\nGenerate compact stats string for the alignment column header badge.",
+    "crumbs": [
+      "components",
+      "step_renderer"
+    ]
+  },
+  {
+    "objectID": "components/helpers.html",
+    "href": "components/helpers.html",
+    "title": "helpers",
+    "section": "",
+    "text": "These extract alignment state from the nested step_states.alignment path in the interaction context. All getters have sensible defaults for uninitialized state.",
+    "crumbs": [
+      "components",
+      "helpers"
+    ]
+  },
+  {
+    "objectID": "components/helpers.html#state-getters",
+    "href": "components/helpers.html#state-getters",
+    "title": "helpers",
+    "section": "",
+    "text": "These extract alignment state from the nested step_states.alignment path in the interaction context. All getters have sensible defaults for uninitialized state.",
+    "crumbs": [
+      "components",
+      "helpers"
+    ]
+  },
+  {
+    "objectID": "services/alignment.html",
+    "href": "services/alignment.html",
+    "title": "alignment",
+    "section": "",
+    "text": "This service wraps the Silero VAD plugin to provide voice activity detection data. It processes audio files to extract time ranges where speech is detected, which are then used to align text segments with their corresponding audio positions.\n\n\n\n\ndef AlignmentService(\n    plugin_manager:PluginManager, # Plugin manager for accessing VAD plugin\n    plugin_name:str='cjm-media-plugin-silero-vad', # Name of the VAD plugin\n):\n\nService for temporal alignment via Silero VAD plugin.",
+    "crumbs": [
+      "services",
+      "alignment"
+    ]
+  },
+  {
+    "objectID": "services/alignment.html#alignmentservice",
+    "href": "services/alignment.html#alignmentservice",
+    "title": "alignment",
+    "section": "",
+    "text": "This service wraps the Silero VAD plugin to provide voice activity detection data. It processes audio files to extract time ranges where speech is detected, which are then used to align text segments with their corresponding audio positions.\n\n\n\n\ndef AlignmentService(\n    plugin_manager:PluginManager, # Plugin manager for accessing VAD plugin\n    plugin_name:str='cjm-media-plugin-silero-vad', # Name of the VAD plugin\n):\n\nService for temporal alignment via Silero VAD plugin.",
+    "crumbs": [
+      "services",
+      "alignment"
+    ]
+  },
+  {
+    "objectID": "services/alignment.html#alignment-helpers",
+    "href": "services/alignment.html#alignment-helpers",
+    "title": "alignment",
+    "section": "Alignment Helpers",
+    "text": "Alignment Helpers\n\n\ncheck_alignment_ready\n\ndef check_alignment_ready(\n    segment_count:int, # Number of text segments\n    chunk_count:int, # Number of VAD chunks\n)-&gt;bool: # True if counts match and alignment can proceed\n\nCheck if segment and VAD chunk counts match for 1:1 alignment.",
+    "crumbs": [
+      "services",
+      "alignment"
+    ]
+  },
+  {
+    "objectID": "services/alignment.html#tests",
+    "href": "services/alignment.html#tests",
+    "title": "alignment",
+    "section": "Tests",
+    "text": "Tests\nThe following cells demonstrate the alignment service and helper functions.\n\n# Test check_alignment_ready\nprint(f\"3 segments vs 3 chunks: {check_alignment_ready(3, 3)}\")  # True\nprint(f\"3 segments vs 5 chunks: {check_alignment_ready(3, 5)}\")  # False\nprint(f\"0 segments vs 3 chunks: {check_alignment_ready(0, 3)}\")  # False\nprint(f\"3 segments vs 0 chunks: {check_alignment_ready(3, 0)}\")  # False\n\n3 segments vs 3 chunks: True\n3 segments vs 5 chunks: False\n0 segments vs 3 chunks: False\n3 segments vs 0 chunks: False\n\n\n\nAlignmentService with Silero VAD Plugin\nThese tests require the Silero VAD plugin to be installed and discoverable.\n\n# Test AlignmentService with Silero VAD plugin\nfrom pathlib import Path\nfrom cjm_plugin_system.core.manager import PluginManager\n\n# Calculate project root from notebook location (nbs/services/ -&gt; project root)\nproject_root = Path.cwd().parent.parent\nmanifests_dir = project_root / \".cjm\" / \"manifests\"\n\n# Create plugin manager with explicit search path\nmanager = PluginManager(search_paths=[manifests_dir])\nmanager.discover_manifests()\n\nprint(f\"Discovered {len(manager.discovered)} plugins from {manifests_dir}\")\n\n# Check if VAD plugin is available\nvad_meta = manager.get_discovered_meta(\"cjm-media-plugin-silero-vad\")\nif vad_meta:\n    print(f\"Found plugin: {vad_meta.name} v{vad_meta.version}\")\nelse:\n    print(\"Silero VAD plugin not found - install via plugins.yaml\")\n\n[PluginManager] Discovered manifest: cjm-media-plugin-silero-vad from /mnt/SN850X_8TB_EXT4/Projects/GitHub/cj-mills/cjm-transcript-vad-align/.cjm/manifests/cjm-media-plugin-silero-vad.json\n\n\nDiscovered 1 plugins from /mnt/SN850X_8TB_EXT4/Projects/GitHub/cj-mills/cjm-transcript-vad-align/.cjm/manifests\nFound plugin: cjm-media-plugin-silero-vad v0.0.2\n\n\n\n# Initialize and test AlignmentService\nif vad_meta:\n    # Load the plugin\n    manager.load_plugin(vad_meta, {\"threshold\": 0.5})\n    \n    align_service = AlignmentService(manager)\n    print(f\"Plugin available: {align_service.is_available()}\")\n    \n    # Test audio analysis (use await directly - Jupyter supports top-level await)\n    audio_file = \"/mnt/SN850X_8TB_EXT4/Projects/GitHub/cj-mills/cjm-transcription-plugin-voxtral-hf/test_files/02 - 1. Laying Plans.mp3\"\n    \n    chunks, duration = await align_service.analyze_audio_async(audio_file)\n    \n    print(f\"\\nAudio duration: {duration:.2f}s\")\n    print(f\"Detected {len(chunks)} VAD chunks\")\n    print(\"\\nFirst 5 chunks:\")\n    for chunk in chunks[:5]:\n        print(f\"  [{chunk.index}] {chunk.start_time:.2f}s - {chunk.end_time:.2f}s (duration: {chunk.duration:.2f}s)\")\n\n[PluginManager] Launching worker for cjm-media-plugin-silero-vad...\n\n\n[cjm-media-plugin-silero-vad] Starting worker on port 52517...\n[cjm-media-plugin-silero-vad] Logs: /home/innom-dt/.cjm/logs/cjm-media-plugin-silero-vad.log\n\n\n[PluginManager] HTTP Request: GET http://127.0.0.1:52517/health \"HTTP/1.1 200 OK\"\n[PluginManager] HTTP Request: POST http://127.0.0.1:52517/initialize \"HTTP/1.1 200 OK\"\n[PluginManager] Loaded plugin: cjm-media-plugin-silero-vad\n[PluginManager] HTTP Request: POST http://127.0.0.1:52517/execute \"HTTP/1.1 200 OK\"\n\n\n[cjm-media-plugin-silero-vad] Worker ready.\nPlugin available: True\n\nAudio duration: 256.39s\nDetected 89 VAD chunks\n\nFirst 5 chunks:\n  [0] 1.10s - 2.30s (duration: 1.20s)\n  [1] 4.80s - 5.90s (duration: 1.10s)\n  [2] 6.60s - 9.80s (duration: 3.20s)\n  [3] 10.70s - 12.40s (duration: 1.70s)\n  [4] 12.60s - 15.40s (duration: 2.80s)\n\n\n\n# Cleanup\nif vad_meta:\n    manager.unload_all()\n    print(\"Plugins unloaded\")\n\n[PluginManager] HTTP Request: POST http://127.0.0.1:52517/cleanup \"HTTP/1.1 200 OK\"\n[PluginManager] Unloaded plugin: cjm-media-plugin-silero-vad\n\n\nPlugins unloaded",
+    "crumbs": [
+      "services",
+      "alignment"
+    ]
+  },
+  {
+    "objectID": "routes/audio.html",
+    "href": "routes/audio.html",
+    "title": "audio",
+    "section": "",
+    "text": "Updates auto-navigate state and returns JavaScript to update the client-side flag.",
+    "crumbs": [
+      "routes",
+      "audio"
+    ]
+  },
+  {
+    "objectID": "routes/audio.html#auto-navigate-toggle-handler",
+    "href": "routes/audio.html#auto-navigate-toggle-handler",
+    "title": "audio",
+    "section": "",
+    "text": "Updates auto-navigate state and returns JavaScript to update the client-side flag.",
+    "crumbs": [
+      "routes",
+      "audio"
+    ]
+  },
+  {
+    "objectID": "routes/audio.html#router-initialization",
+    "href": "routes/audio.html#router-initialization",
+    "title": "audio",
+    "section": "Router Initialization",
+    "text": "Router Initialization\nCreates audio control routes and returns the router with route functions.\n\n\ninit_audio_router\n\ndef init_audio_router(\n    state_store:SQLiteWorkflowStateStore, # The workflow state store\n    workflow_id:str, # The workflow identifier\n    prefix:str, # Base prefix for audio routes\n    urls:AlignmentUrls, # URL bundle to populate\n)-&gt;Tuple: # (router, routes dict)\n\nInitialize alignment audio control routes.",
+    "crumbs": [
+      "routes",
+      "audio"
+    ]
+  },
+  {
+    "objectID": "routes/init.html",
+    "href": "routes/init.html",
+    "title": "init",
+    "section": "",
+    "text": "def init_alignment_routers(\n    state_store:SQLiteWorkflowStateStore, # The workflow state store\n    workflow_id:str, # The workflow identifier\n    source_service:SourceService, # Service for fetching source blocks\n    alignment_service:AlignmentService, # Service for VAD analysis\n    prefix:str, # Base prefix for alignment routes (e.g., \"/workflow/align\")\n    audio_src_url:str, # URL for audio_src route (from core router)\n    wrapped_init:Callable=None, # Optional wrapped init handler\n)-&gt;Tuple: # (routers, urls, merged_routes)\n\nInitialize and return all alignment routers with URL bundle.",
+    "crumbs": [
+      "routes",
+      "init"
+    ]
+  },
+  {
+    "objectID": "routes/init.html#router-assembly",
+    "href": "routes/init.html#router-assembly",
+    "title": "init",
+    "section": "",
+    "text": "def init_alignment_routers(\n    state_store:SQLiteWorkflowStateStore, # The workflow state store\n    workflow_id:str, # The workflow identifier\n    source_service:SourceService, # Service for fetching source blocks\n    alignment_service:AlignmentService, # Service for VAD analysis\n    prefix:str, # Base prefix for alignment routes (e.g., \"/workflow/align\")\n    audio_src_url:str, # URL for audio_src route (from core router)\n    wrapped_init:Callable=None, # Optional wrapped init handler\n)-&gt;Tuple: # (routers, urls, merged_routes)\n\nInitialize and return all alignment routers with URL bundle.",
+    "crumbs": [
+      "routes",
+      "init"
+    ]
+  },
+  {
+    "objectID": "routes/handlers.html",
+    "href": "routes/handlers.html",
+    "title": "handlers",
+    "section": "",
+    "text": "Fetches VAD data from the alignment service and stores in state.\n\n\n\n\ndef AlignInitResult(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nResult from pure alignment init handler.\nContains domain-specific data for the combined layer wrapper to use when building cross-domain OOB elements (shared chrome, alignment status).",
+    "crumbs": [
+      "routes",
+      "handlers"
+    ]
+  },
+  {
+    "objectID": "routes/handlers.html#initialize-handler",
+    "href": "routes/handlers.html#initialize-handler",
+    "title": "handlers",
+    "section": "",
+    "text": "Fetches VAD data from the alignment service and stores in state.\n\n\n\n\ndef AlignInitResult(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nResult from pure alignment init handler.\nContains domain-specific data for the combined layer wrapper to use when building cross-domain OOB elements (shared chrome, alignment status).",
+    "crumbs": [
+      "routes",
+      "handlers"
+    ]
+  },
+  {
+    "objectID": "routes/handlers.html#router-initialization",
+    "href": "routes/handlers.html#router-initialization",
+    "title": "handlers",
+    "section": "Router Initialization",
+    "text": "Router Initialization\nCreates the workflow router with the init route.\n\n\ninit_workflow_router\n\ndef init_workflow_router(\n    state_store:SQLiteWorkflowStateStore, # The workflow state store\n    workflow_id:str, # The workflow identifier\n    source_service:SourceService, # Service for fetching source blocks\n    alignment_service:AlignmentService, # Service for VAD analysis\n    prefix:str, # Route prefix (e.g., \"/workflow/align/workflow\")\n    urls:AlignmentUrls, # URL bundle (populated after routes defined)\n    handler_init:Callable=None, # Optional wrapped init handler\n)-&gt;Tuple: # (router, route_dict)\n\nInitialize workflow routes for alignment.\nAccepts optional handler override for wrapping with cross-domain coordination (e.g., shared chrome, alignment status OOB updates).",
+    "crumbs": [
+      "routes",
+      "handlers"
+    ]
+  }
+]
